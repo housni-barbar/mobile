@@ -444,32 +444,132 @@ tr:last-child td {
     }
 }
 
-@media (max-width: 640px) {
-    .shell {
-        padding: 16px 12px 26px;
+@media (max-width: 760px) {
+    .hero {
+        gap: 14px;
     }
 
     .hero-card,
     .panel {
         padding: 16px;
-        border-radius: 20px;
+        border-radius: 18px;
+    }
+
+    .hero-card::before {
+        width: 180px;
+        height: 180px;
+        inset: -70px -70px auto auto;
+    }
+
+    .hero-card::after {
+        width: 180px;
+        height: 180px;
+        inset: auto auto -80px -70px;
+    }
+
+    .eyebrow {
+        padding: 6px 10px;
+        font-size: 0.84rem;
+    }
+
+    .live-clock {
+        margin-bottom: 10px;
+        padding: 7px 10px;
+        font-size: 0.84rem;
     }
 
     h1 {
-        font-size: 1.88rem;
+        font-size: 1.7rem;
+        line-height: 1.16;
+    }
+
+    .lead {
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    .stat-grid,
+    .summary {
+        gap: 10px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat,
+    .mini-card {
+        padding: 12px;
+    }
+
+    .section-title {
+        margin-bottom: 12px;
+    }
+
+    .form-grid {
+        gap: 10px;
+    }
+
+    .field {
+        gap: 6px;
+    }
+
+    .two-col {
+        gap: 10px;
+    }
+
+    input,
+    select,
+    textarea {
+        padding: 11px 12px;
+        border-radius: 12px;
+    }
+
+    .btn {
+        padding: 11px 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .shell {
+        padding: 12px 10px 22px;
+    }
+
+    .hero-card,
+    .panel {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    .stat-grid,
+    .summary {
+        grid-template-columns: 1fr;
     }
 
     .stat .value,
     .big-number {
-        font-size: 1.45rem;
+        font-size: 1.35rem;
     }
 
     .actions {
         flex-direction: column;
+        gap: 8px;
     }
 
     .btn {
         width: 100%;
+    }
+
+    .chip {
+        padding: 8px 10px;
+        font-size: 0.9rem;
+    }
+
+    table {
+        min-width: 600px;
+        font-size: 0.92rem;
+    }
+
+    th,
+    td {
+        padding: 10px 8px;
     }
 }
 
