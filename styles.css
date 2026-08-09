@@ -1,18 +1,18 @@
 :root {
-    --bg: #eef3fb;
-    --bg-accent: rgba(15, 118, 110, 0.12);
-    --panel: rgba(255, 255, 255, 0.9);
+    --bg: #e9eef6;
+    --bg-accent: rgba(11, 67, 99, 0.14);
+    --panel: rgba(250, 252, 255, 0.95);
     --panel-strong: rgba(255, 255, 255, 0.98);
-    --panel-border: rgba(15, 23, 42, 0.08);
-    --text: #0f172a;
-    --muted: #64748b;
-    --primary: #0f766e;
-    --primary-strong: #115e59;
-    --primary-soft: rgba(15, 118, 110, 0.12);
-    --danger: #b42318;
-    --success: #027a48;
-    --shadow: 0 24px 70px rgba(15, 23, 42, 0.12);
-    --shadow-soft: 0 12px 30px rgba(15, 23, 42, 0.08);
+    --panel-border: rgba(15, 23, 42, 0.1);
+    --text: #07101d;
+    --muted: #44556a;
+    --primary: #0b4e63;
+    --primary-strong: #083949;
+    --primary-soft: rgba(11, 78, 99, 0.14);
+    --danger: #8b1f1f;
+    --success: #0c5f43;
+    --shadow: 0 22px 60px rgba(15, 23, 42, 0.14);
+    --shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.08);
     --radius: 24px;
 }
 
@@ -30,9 +30,9 @@ body {
     color: var(--text);
     font-family: "Segoe UI", Tahoma, Arial, sans-serif;
     background:
-        radial-gradient(circle at top right, rgba(14, 165, 233, 0.18), transparent 26%),
-        radial-gradient(circle at left center, rgba(15, 118, 110, 0.16), transparent 30%),
-        linear-gradient(180deg, #fbfdff 0%, var(--bg) 100%);
+        radial-gradient(circle at top right, rgba(9, 76, 109, 0.18), transparent 26%),
+        radial-gradient(circle at left center, rgba(11, 78, 99, 0.14), transparent 30%),
+        linear-gradient(180deg, #f9fbfe 0%, var(--bg) 100%);
 }
 
 .shell {
@@ -85,14 +85,14 @@ body {
     inset: -80px -100px auto auto;
     width: 240px;
     height: 240px;
-    background: radial-gradient(circle, rgba(15, 118, 110, 0.22) 0%, rgba(15, 118, 110, 0) 70%);
+    background: radial-gradient(circle, rgba(11, 78, 99, 0.28) 0%, rgba(11, 78, 99, 0) 70%);
 }
 
 .hero-card::after {
     inset: auto auto -110px -90px;
     width: 260px;
     height: 260px;
-    background: radial-gradient(circle, rgba(14, 165, 233, 0.16) 0%, rgba(14, 165, 233, 0) 72%);
+    background: radial-gradient(circle, rgba(9, 76, 109, 0.18) 0%, rgba(9, 76, 109, 0) 72%);
 }
 
 .eyebrow {
@@ -102,8 +102,8 @@ body {
     padding: 8px 14px;
     margin-bottom: 14px;
     border-radius: 999px;
-    background: var(--primary-soft);
-    border: 1px solid rgba(15, 118, 110, 0.12);
+    background: rgba(11, 78, 99, 0.12);
+    border: 1px solid rgba(11, 78, 99, 0.16);
     color: var(--primary-strong);
     font-size: 0.92rem;
     font-weight: 800;
@@ -118,7 +118,7 @@ body {
     padding: 8px 12px;
     border-radius: 999px;
     border: 1px solid rgba(15, 23, 42, 0.08);
-    background: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.94);
     color: var(--muted);
     font-size: 0.94rem;
     font-weight: 700;
@@ -246,7 +246,7 @@ textarea {
     padding: 12px 14px;
     border: 1px solid rgba(15, 23, 42, 0.12);
     border-radius: 14px;
-    background: #fff;
+    background: #f8fbff;
     color: var(--text);
     outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
@@ -265,8 +265,8 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus {
-    border-color: rgba(15, 118, 110, 0.62);
-    box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
+    border-color: rgba(11, 78, 99, 0.72);
+    box-shadow: 0 0 0 4px rgba(11, 78, 99, 0.14);
     transform: translateY(-1px);
 }
 
@@ -304,12 +304,12 @@ textarea:focus {
 .btn-primary {
     color: #fff;
     background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-    box-shadow: 0 12px 24px rgba(15, 118, 110, 0.24);
+    box-shadow: 0 12px 24px rgba(11, 78, 99, 0.3);
 }
 
 .btn-secondary {
-    color: #0f172a;
-    background: linear-gradient(180deg, #eef2f7, #e2e8f0);
+    color: #07101d;
+    background: linear-gradient(180deg, #eef3f9, #dfe8f2);
 }
 
 .chips {
@@ -323,7 +323,7 @@ textarea:focus {
     border: 1px solid rgba(15, 23, 42, 0.1);
     border-radius: 999px;
     padding: 9px 12px;
-    background: #fff;
+    background: #ffffff;
     color: var(--text);
     cursor: pointer;
     box-shadow: var(--shadow-soft);
@@ -331,9 +331,9 @@ textarea:focus {
 }
 
 .chip:hover {
-    border-color: rgba(15, 118, 110, 0.4);
+    border-color: rgba(11, 78, 99, 0.5);
     transform: translateY(-1px);
-    background: #f8fffe;
+    background: #f2f8fc;
 }
 
 .summary {
@@ -369,7 +369,7 @@ table {
     width: 100%;
     min-width: 720px;
     border-collapse: collapse;
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.98);
 }
 
 thead th {
@@ -387,7 +387,7 @@ td {
 }
 
 th {
-    background: linear-gradient(180deg, #f8fafc, #f3f6fb);
+    background: linear-gradient(180deg, #eef3f9, #e1e9f2);
     color: var(--muted);
     font-size: 0.9rem;
 }
