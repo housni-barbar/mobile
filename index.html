@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دفتر درج المحل</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <main class="shell">
+        <section class="hero">
+            <div class="hero-card">
+                <div class="eyebrow">دفتر درج المحل</div>
+                <div class="live-clock" id="liveClock">جارٍ تحميل الوقت...</div>
+                <h1>سجّل كل حركة، وخلي الرصيد يحسب لحاله.</h1>
+                <p class="lead">هذا مشروع أولي لمحل الموبايلات: تدخل العمليات اليومية، يطلع معك الرصيد المتوقع في الدرج،
+                    وتقارنُه مع الرصيد الفعلي آخر النهار حتى تتأكد إذا الحسابات مظبوطة.</p>
+
+                <div class="stat-grid">
+                    <div class="stat">
+                        <span class="label">الرصيد الافتتاحي - ليرة سورية</span>
+                        <div class="value" id="openingLbpDisplay">0 ل.س</div>
+                    </div>
+                    <div class="stat">
+                        <span class="label">الرصيد الافتتاحي - دولار</span>
+                        <div class="value" id="openingUsdDisplay">0 $</div>
+                    </div>
+                    <div class="stat">
+                        <span class="label">عدد العمليات اليوم</span>
+                        <div class="value" id="countDisplay">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-side">
+                <div class="mini-card">
+                    <span class="label">مطابقة الليرة السورية</span>
+                    <div class="big-number" id="lbpDifferenceDisplay">0</div>
+                    <div class="note" id="lbpDifferenceLabel">أدخل الرصيد الفعلي بالليرة السورية للمقارنة.</div>
+                </div>
+                <div class="mini-card">
+                    <span class="label">مطابقة الدولار</span>
+                    <div class="big-number" id="usdDifferenceDisplay">0</div>
+                    <div class="note" id="usdDifferenceLabel">أدخل الرصيد الفعلي بالدولار للمقارنة.</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="layout">
+            <div class="panel">
+                <div class="section-title">
+                    <div>
+                        <h2>إدخال عملية</h2>
+                        <small>مثال: بيع دولار، دفع راتب، بيع تلفون، أو سحب نقدي.</small>
+                    </div>
+                </div>
+
+                <form id="transactionForm" class="form-grid">
+                    <div class="two-col">
+                        <div class="field">
+                            <label for="dateInput">التاريخ</label>
+                            <input id="dateInput" type="date">
+                        </div>
+                        <div class="field">
+                            <label for="timeInput">الوقت</label>
+                            <input id="timeInput" type="text" inputmode="text" autocomplete="off"
+                                placeholder="02:42 PM">
+                        </div>
+                    </div>
+
+                    <div class="two-col">
+                        <div class="field">
+                            <label for="typeInput">نوع الحركة</label>
+                            <select id="typeInput">
+                                <option value="in">داخل للدرج</option>
+                                <option value="out">خارج من الدرج</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="amountInput">المبلغ</label>
+                            <input id="amountInput" type="number" min="0" step="0.01" placeholder="مثال 1000000">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="currencyInput">العملة</label>
+                        <select id="currencyInput">
+                            <option value="LBP">ليرة سورية</option>
+                            <option value="USD">دولار</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="categoryInput">التصنيف</label>
+                        <input id="categoryInput" type="text" placeholder="مثال: بيع دولار، بيع تلفون، سحب راتب">
+                        <div class="chips" aria-label="اقتراحات سريعة">
+                            <button class="chip" type="button" data-category="بيع دولار">بيع دولار</button>
+                            <button class="chip" type="button" data-category="شراء دولار">شراء دولار</button>
+                            <button class="chip" type="button" data-category="بيع تلفون">بيع تلفون</button>
+                            <button class="chip" type="button" data-category="سحب راتب">سحب راتب</button>
+                            <button class="chip" type="button" data-category="تحويل">تحويل</button>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="noteInput">ملاحظات</label>
+                        <textarea id="noteInput" placeholder="مثال: أخذ 100 دولار، وأعطى 1,300,000 ل.س."></textarea>
+                    </div>
+
+                    <div class="two-col">
+                        <div class="field">
+                            <label for="openingLbpInput">الرصيد الافتتاحي - ليرة سورية</label>
+                            <input id="openingLbpInput" type="number" min="0" step="0.01"
+                                placeholder="رصيد بداية اليوم بالليرة السورية">
+                        </div>
+                        <div class="field">
+                            <label for="openingUsdInput">الرصيد الافتتاحي - دولار</label>
+                            <input id="openingUsdInput" type="number" min="0" step="0.01"
+                                placeholder="رصيد بداية اليوم بالدولار">
+                        </div>
+                    </div>
+
+                    <div class="two-col">
+                        <div class="field">
+                            <label for="physicalLbpInput">الرصيد الفعلي في الدرج - ليرة سورية</label>
+                            <input id="physicalLbpInput" type="number" min="0" step="0.01"
+                                placeholder="كم موجود فعلياً بالليرة السورية؟">
+                        </div>
+                        <div class="field">
+                            <label for="physicalUsdInput">الرصيد الفعلي في الدرج - دولار</label>
+                            <input id="physicalUsdInput" type="number" min="0" step="0.01"
+                                placeholder="كم موجود فعلياً بالدولار؟">
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn btn-primary" type="submit">إضافة الحركة</button>
+                        <button class="btn btn-secondary" type="button" id="clearDayButton">تفريغ اليوم</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="section-title">
+                    <div>
+                        <h2>ملخص اليوم</h2>
+                        <small>يعتمد على كل الحركات المسجلة داخل الجدول.</small>
+                    </div>
+                </div>
+
+                <div class="summary">
+                    <div class="stat">
+                        <span class="label">إجمالي الداخل - ليرة سورية</span>
+                        <div class="value" id="totalInLbpDisplay">0 ل.س</div>
+                    </div>
+                    <div class="stat">
+                        <span class="label">إجمالي الخارج - ليرة سورية</span>
+                        <div class="value" id="totalOutLbpDisplay">0 ل.س</div>
+                    </div>
+                    <div class="stat">
+                        <span class="label">المتوقع النهائي - ليرة سورية</span>
+                        <div class="value" id="expectedLbpDisplay">0 ل.س</div>
+                    </div>
+                    <div class="stat">
+                        <span class="label">إجمالي الداخل - دولار</span>
+                        <div class="value" id="totalInUsdDisplay">0 $</div>
+                    </div>
+                    <div class="stat">
+                        <span class="label">إجمالي الخارج - دولار</span>
+                        <div class="value" id="totalOutUsdDisplay">0 $</div>
+                    </div>
+                    <div class="stat">
+                        <span class="label">المتوقع النهائي - دولار</span>
+                        <div class="value" id="expectedUsdDisplay">0 $</div>
+                    </div>
+                </div>
+
+                <div style="height: 14px;"></div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>الوقت</th>
+                                <th>النوع</th>
+                                <th>التصنيف</th>
+                                <th>المبلغ</th>
+                                <th>ملاحظة</th>
+                                <th>حذف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
