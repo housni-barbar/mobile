@@ -478,37 +478,7 @@ body.dark-mode .primary-button { color: #fff; }
     .form-card, .balance-card { padding: 17px; }
     .table-card { overflow: hidden; }
 }
-.footer {
-    margin-top: 60px;
-    padding: 30px 20px;
-    text-align: center;
-    border-top: 1px solid rgba(128, 128, 128, 0.2);
-    background: var(--card-bg);
-    color: var(--text-color);
-}
 
-.footer h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    font-weight: 700;
-}
-
-.footer-description {
-    margin-bottom: 18px;
-    opacity: 0.8;
-    font-size: 1rem;
-}
-
-.footer-version {
-    font-size: 0.9rem;
-    opacity: 0.7;
-    margin-bottom: 8px;
-}
-
-.footer-copy {
-    font-size: 0.85rem;
-    opacity: 0.6;
-}
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
