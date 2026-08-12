@@ -1,204 +1,238 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173a46" />
+    <meta name="description" content="دفتر درج المحل — سجل واضح وآمن لحركات النقد اليومية." />
     <title>دفتر درج المحل</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="التنقل الرئيسي">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">د</div>
+          <div class="brand-copy">
+            <strong>دفتر درج المحل</strong>
+            <small>مساحة العمل اليومية</small>
+          </div>
+        </div>
 
-<body>
-    <main class="shell">
-        <section class="hero">
-            <div class="hero-card">
-                <div class="eyebrow">NoteBook</div>
-                <div class="live-clock" id="liveClock">جارٍ تحميل الوقت...</div>
-                <h1>سجّل كل حركة، وخلي الرصيد يحسب لحاله.</h1>
-                <p class="lead">هذا مشروع أولي لمحل الموبايلات: تدخل العمليات اليومية، يطلع معك الرصيد المتوقع في الدرج،
-                    وتقارنُه مع الرصيد الفعلي آخر النهار حتى تتأكد إذا الحسابات مظبوطة.</p>
+        <div class="side-label">مساحة العمل</div>
+        <nav aria-label="أقسام التطبيق">
+          <ul class="nav-list">
+            <li><button type="button" class="nav-item is-active" data-section="dashboardSection" aria-current="page">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span>نظرة عامة</span>
+            </button></li>
+            <li><button type="button" class="nav-item" data-section="transactionsSection" aria-current="false">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/><path d="m17 15 3 3-3 3"/></svg></span><span>الحركات</span>
+            </button></li>
+            <li><button type="button" class="nav-item" data-section="balancesSection" aria-current="false">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m8 15 3-4 3 2 5-6"/></svg></span><span>الأرصدة</span>
+            </button></li>
+          </ul>
+        </nav>
+        <div class="side-label">قريباً</div>
+        <nav aria-label="الأقسام القادمة">
+          <ul class="nav-list">
+            <li><button type="button" class="nav-item" data-section="reportsSection" aria-current="false">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/><path d="M3 20h18"/></svg></span><span>التقارير</span>
+            </button></li>
+            <li><button type="button" class="nav-item" data-section="settingsSection" aria-current="false">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></span><span>الإعدادات</span>
+            </button></li>
+          </ul>
+        </nav>
+        <div class="sidebar-footer"><span class="footer-dot" aria-hidden="true"></span><span>البيانات محفوظة على هذا الجهاز</span></div>
+        <button type="button" class="sidebar-close" id="sidebarClose" aria-label="إغلاق القائمة">
+          <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </aside>
+      <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
 
-                <div class="stat-grid">
-                    <div class="stat">
-                        <span class="label">الرصيد الافتتاحي - ليرة سورية</span>
-                        <div class="value" id="openingLbpDisplay">0 ل.س</div>
-                    </div>
-                    <div class="stat">
-                        <span class="label">الرصيد الافتتاحي - دولار</span>
-                        <div class="value" id="openingUsdDisplay">0 $</div>
-                    </div>
-                    <div class="stat">
-                        <span class="label">عدد العمليات اليوم</span>
-                        <div class="value" id="countDisplay">0</div>
-                    </div>
-                </div>
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="page-kicker">دفتر النقد اليومي</p>
+            <h1 id="pageTitle">نظرة عامة</h1>
+            <p class="page-subtitle" id="pageSubtitle">الصورة الواضحة لدرجك اليوم.</p>
+          </div>
+          <div class="topbar-actions">
+            <button type="button" class="menu-toggle" id="sidebarToggle" aria-label="فتح القائمة" aria-expanded="false">
+              <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            </button>
+          </div>
+          <div class="clock"><span class="clock-mark" aria-hidden="true"></span><span id="liveClock">جارٍ تحميل الوقت...</span></div>
+        </header>
+
+        <section class="page-section" id="dashboardSection" aria-labelledby="dashboardHeading">
+          <div class="welcome">
+            <div>
+              <p>متابعة سريعة</p>
+              <h2 id="dashboardHeading">كل حركة في مكانها، وكل رصيد أمامك.</h2>
             </div>
+            <span class="welcome-tag"><span class="footer-dot" aria-hidden="true"></span>محلي وآمن</span>
+          </div>
 
-            <div class="hero-side">
-                <div class="mini-card">
-                    <span class="label">مطابقة الليرة السورية</span>
-                    <div class="big-number" id="lbpDifferenceDisplay">0</div>
-                    <div class="note" id="lbpDifferenceLabel">أدخل الرصيد الفعلي بالليرة السورية للمقارنة.</div>
-                </div>
-                <div class="mini-card">
-                    <span class="label">مطابقة الدولار</span>
-                    <div class="big-number" id="usdDifferenceDisplay">0</div>
-                    <div class="note" id="usdDifferenceLabel">أدخل الرصيد الفعلي بالدولار للمقارنة.</div>
-                </div>
+          <div class="metrics-grid" aria-label="ملخص الأرصدة">
+            <article class="metric primary">
+              <span class="metric-label">الرصيد المتوقع — ليرة سورية</span>
+              <strong class="metric-value" data-value="expected-lbp">0 ل.س</strong>
+              <span class="metric-note">الافتتاحي + الداخل - الخارج</span>
+            </article>
+            <article class="metric">
+              <span class="metric-label">الرصيد المتوقع — دولار</span>
+              <strong class="metric-value" data-value="expected-usd">0 $</strong>
+              <span class="metric-note">محسوب بشكل مستقل</span>
+            </article>
+            <article class="metric">
+              <span class="metric-label">الرصيد الافتتاحي — ليرة</span>
+              <strong class="metric-value" id="openingLbpDisplay" data-value="opening-lbp">0 ل.س</strong>
+              <span class="metric-note">بداية اليوم</span>
+            </article>
+            <article class="metric">
+              <span class="metric-label">عدد العمليات</span>
+              <strong class="metric-value" id="countDisplay" data-value="count">0</strong>
+              <span class="metric-note">حركة مسجلة</span>
+            </article>
+          </div>
+
+          <div class="overview-grid">
+            <article class="card">
+              <div class="card-head">
+                <div><h2>آخر الحركات</h2><p>أحدث ما تم تسجيله في الدرج</p></div>
+                <button type="button" class="text-link" data-section="transactionsSection">عرض الكل</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>الوقت</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th></tr></thead>
+                  <tbody id="recentTransactionsBody"></tbody>
+                </table>
+              </div>
+            </article>
+            <div class="side-stack">
+              <article class="difference-card">
+                <span class="card-eyebrow">مطابقة الليرة السورية</span>
+                <strong class="big-number" id="lbpDifferenceDisplay">أدخل الرصيد الفعلي</strong>
+                <span class="difference-note" id="lbpDifferenceLabel">أدخل الرصيد الفعلي بالليرة السورية للمقارنة.</span>
+              </article>
+              <article class="difference-card alt">
+                <span class="card-eyebrow">مطابقة الدولار</span>
+                <strong class="big-number" id="usdDifferenceDisplay">أدخل الرصيد الفعلي</strong>
+                <span class="difference-note" id="usdDifferenceLabel">أدخل الرصيد الفعلي بالدولار للمقارنة.</span>
+              </article>
             </div>
+          </div>
         </section>
 
-        <section class="layout">
-            <div class="panel">
-                <div class="section-title">
-                    <div>
-                        <h2>إدخال عملية</h2>
-                        <small>مثال: بيع دولار، دفع راتب، بيع تلفون، أو سحب نقدي.</small>
-                    </div>
+        <section class="page-section" id="transactionsSection" aria-labelledby="transactionsHeading" hidden>
+          <div class="section-heading">
+            <div><h2 id="transactionsHeading">الحركات</h2><p>أضف كل دخول وخروج بسرعة ووضوح.</p></div>
+            <div class="section-heading-actions"><button type="button" class="ghost-button" data-section="balancesSection">تحديث الأرصدة</button></div>
+          </div>
+          <div class="transaction-layout">
+            <article class="card form-card">
+              <h2>إدخال عملية</h2>
+              <p>مثال: بيع دولار، دفع راتب، بيع تلفون، أو سحب نقدي.</p>
+              <form id="transactionForm" class="form-grid">
+                <div class="two-col">
+                  <div class="field"><label for="dateInput">التاريخ</label><input id="dateInput" type="date"></div>
+                  <div class="field"><label for="timeInput">الوقت</label><input id="timeInput" type="text" inputmode="text" autocomplete="off" placeholder="02:42 PM"></div>
                 </div>
-
-                <form id="transactionForm" class="form-grid">
-                    <div class="two-col">
-                        <div class="field">
-                            <label for="dateInput">التاريخ</label>
-                            <input id="dateInput" type="date">
-                        </div>
-                        <div class="field">
-                            <label for="timeInput">الوقت</label>
-                            <input id="timeInput" type="text" inputmode="text" autocomplete="off"
-                                placeholder="02:42 PM">
-                        </div>
-                    </div>
-
-                    <div class="two-col">
-                        <div class="field">
-                            <label for="typeInput">نوع الحركة</label>
-                            <select id="typeInput">
-                                <option value="in">داخل للدرج</option>
-                                <option value="out">خارج من الدرج</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label for="amountInput">المبلغ</label>
-                            <input id="amountInput" type="number" min="0" step="0.01" placeholder="مثال 1000000">
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label for="currencyInput">العملة</label>
-                        <select id="currencyInput">
-                            <option value="LBP">ليرة سورية</option>
-                            <option value="USD">دولار</option>
-                        </select>
-                    </div>
-
-                    <div class="field">
-                        <label for="categoryInput">التصنيف</label>
-                        <input id="categoryInput" type="text" placeholder="مثال: بيع دولار، بيع تلفون، سحب راتب">
-                        <div class="chips" aria-label="اقتراحات سريعة">
-                            <button class="chip" type="button" data-category="بيع دولار">بيع دولار</button>
-                            <button class="chip" type="button" data-category="شراء دولار">شراء دولار</button>
-                            <button class="chip" type="button" data-category="بيع تلفون">بيع تلفون</button>
-                            <button class="chip" type="button" data-category="سحب راتب">سحب راتب</button>
-                            <button class="chip" type="button" data-category="تحويل">تحويل</button>
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label for="noteInput">ملاحظات</label>
-                        <textarea id="noteInput" placeholder="مثال: أخذ 100 دولار، وأعطى 1,300,000 ل.س."></textarea>
-                    </div>
-
-                    <div class="two-col">
-                        <div class="field">
-                            <label for="openingLbpInput">الرصيد الافتتاحي - ليرة سورية</label>
-                            <input id="openingLbpInput" type="number" min="0" step="0.01"
-                                placeholder="رصيد بداية اليوم بالليرة السورية">
-                        </div>
-                        <div class="field">
-                            <label for="openingUsdInput">الرصيد الافتتاحي - دولار</label>
-                            <input id="openingUsdInput" type="number" min="0" step="0.01"
-                                placeholder="رصيد بداية اليوم بالدولار">
-                        </div>
-                    </div>
-
-                    <div class="two-col">
-                        <div class="field">
-                            <label for="physicalLbpInput">الرصيد الفعلي في الدرج - ليرة سورية</label>
-                            <input id="physicalLbpInput" type="number" min="0" step="0.01"
-                                placeholder="كم موجود فعلياً بالليرة السورية؟">
-                        </div>
-                        <div class="field">
-                            <label for="physicalUsdInput">الرصيد الفعلي في الدرج - دولار</label>
-                            <input id="physicalUsdInput" type="number" min="0" step="0.01"
-                                placeholder="كم موجود فعلياً بالدولار؟">
-                        </div>
-                    </div>
-
-                    <div class="actions">
-                        <button class="btn btn-primary" type="submit">إضافة الحركة</button>
-                        <button class="btn btn-secondary" type="button" id="clearDayButton">تفريغ اليوم</button>
-                    </div>
-                </form>
-            </div>
-
-            <div class="panel">
-                <div class="section-title">
-                    <div>
-                        <h2>ملخص اليوم</h2>
-                        <small>يعتمد على كل الحركات المسجلة داخل الجدول.</small>
-                    </div>
+                <div class="two-col">
+                  <div class="field"><label for="typeInput">نوع الحركة</label><select id="typeInput"><option value="in">داخل للدرج</option><option value="out">خارج من الدرج</option></select></div>
+                  <div class="field"><label for="amountInput">المبلغ</label><input id="amountInput" type="number" min="0" step="0.01" placeholder="مثال 1000000"></div>
                 </div>
-
-                <div class="summary">
-                    <div class="stat">
-                        <span class="label">إجمالي الداخل - ليرة سورية</span>
-                        <div class="value" id="totalInLbpDisplay">0 ل.س</div>
-                    </div>
-                    <div class="stat">
-                        <span class="label">إجمالي الخارج - ليرة سورية</span>
-                        <div class="value" id="totalOutLbpDisplay">0 ل.س</div>
-                    </div>
-                    <div class="stat">
-                        <span class="label">المتوقع النهائي - ليرة سورية</span>
-                        <div class="value" id="expectedLbpDisplay">0 ل.س</div>
-                    </div>
-                    <div class="stat">
-                        <span class="label">إجمالي الداخل - دولار</span>
-                        <div class="value" id="totalInUsdDisplay">0 $</div>
-                    </div>
-                    <div class="stat">
-                        <span class="label">إجمالي الخارج - دولار</span>
-                        <div class="value" id="totalOutUsdDisplay">0 $</div>
-                    </div>
-                    <div class="stat">
-                        <span class="label">المتوقع النهائي - دولار</span>
-                        <div class="value" id="expectedUsdDisplay">0 $</div>
-                    </div>
+                <div class="two-col">
+                  <div class="field"><label for="currencyInput">العملة</label><select id="currencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
+                  <div class="field"><label for="categoryInput">التصنيف</label><input id="categoryInput" type="text" placeholder="مثال: مبيعات"></div>
                 </div>
-
-                <div style="height: 14px;"></div>
-
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>الوقت</th>
-                                <th>النوع</th>
-                                <th>التصنيف</th>
-                                <th>المبلغ</th>
-                                <th>ملاحظة</th>
-                                <th>حذف</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionsBody"></tbody>
-                    </table>
+                <div class="field"><label for="noteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="noteInput" placeholder="تفصيل صغير يساعدك لاحقاً"></textarea></div>
+                <div class="chips" aria-label="تصنيفات سريعة">
+                  <button type="button" class="chip" data-category="مبيعات">مبيعات</button>
+                  <button type="button" class="chip" data-category="مشتريات">مشتريات</button>
+                  <button type="button" class="chip" data-category="رواتب">رواتب</button>
+                  <button type="button" class="chip" data-category="مصروف">مصروف</button>
+                  <button type="button" class="chip" data-category="أخرى">أخرى</button>
                 </div>
-            </div>
+                <div class="form-actions">
+                  <button type="submit" class="primary-button">إضافة الحركة</button>
+                  <button type="button" class="icon-button" id="clearDayButton" aria-label="تفريغ عمليات اليوم" title="تفريغ عمليات اليوم">
+                    <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
+                  </button>
+                </div>
+              </form>
+            </article>
+
+            <article class="card table-card">
+              <div class="table-head"><div><h2>سجل العمليات</h2></div><span class="count-badge"><span data-value="count">0</span> حركة</span></div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>الوقت</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th><th>حذف</th></tr></thead>
+                  <tbody id="transactionsBody"></tbody>
+                </table>
+              </div>
+              <div class="metrics-grid compact-metrics">
+                <article class="metric"><span class="metric-label">إجمالي الداخل — ليرة</span><strong class="metric-value" id="totalInLbpDisplay" data-value="in-lbp">0 ل.س</strong></article>
+                <article class="metric"><span class="metric-label">إجمالي الخارج — ليرة</span><strong class="metric-value" id="totalOutLbpDisplay" data-value="out-lbp">0 ل.س</strong></article>
+                <article class="metric primary"><span class="metric-label">المتوقع النهائي — ليرة</span><strong class="metric-value" id="expectedLbpDisplay" data-value="expected-lbp">0 ل.س</strong></article>
+                <article class="metric"><span class="metric-label">إجمالي الداخل — دولار</span><strong class="metric-value" id="totalInUsdDisplay" data-value="in-usd">0 $</strong></article>
+                <article class="metric"><span class="metric-label">إجمالي الخارج — دولار</span><strong class="metric-value" id="totalOutUsdDisplay" data-value="out-usd">0 $</strong></article>
+                <article class="metric"><span class="metric-label">المتوقع النهائي — دولار</span><strong class="metric-value" id="expectedUsdDisplay" data-value="expected-usd">0 $</strong></article>
+              </div>
+            </article>
+          </div>
         </section>
-    </main>
 
-    <script src="app.js"></script>
-</body>
+        <section class="page-section" id="balancesSection" aria-labelledby="balancesHeading" hidden>
+          <div class="section-heading">
+            <div><h2 id="balancesHeading">الأرصدة</h2><p>قارن المتوقع بما هو موجود فعلياً.</p></div>
+          </div>
+          <div class="balance-grid">
+            <article class="card balance-card">
+              <h2>الرصيد الافتتاحي</h2>
+              <p>القيمة التي بدأ بها الدرج اليوم.</p>
+              <div class="balance-fields">
+                <div class="balance-field"><label for="openingLbpInput">ليرة سورية</label><input id="openingLbpInput" type="number" min="0" step="0.01" inputmode="decimal"></div>
+                <div class="balance-field"><label for="openingUsdInput">دولار</label><input id="openingUsdInput" type="number" min="0" step="0.01" inputmode="decimal"></div>
+              </div>
+              <div class="balance-values">
+                <div class="balance-line"><span>الافتتاحي بالليرة</span><strong data-value="opening-lbp">0 ل.س</strong></div>
+                <div class="balance-line"><span>الافتتاحي بالدولار</span><strong data-value="opening-usd">0 $</strong></div>
+              </div>
+            </article>
+            <article class="card balance-card">
+              <h2>الرصيد الفعلي</h2>
+              <p>أدخل ما تجده في الدرج للمقارنة.</p>
+              <div class="balance-fields">
+                <div class="balance-field"><label for="physicalLbpInput">ليرة سورية</label><input id="physicalLbpInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="لم يُدخل بعد"></div>
+                <div class="balance-field"><label for="physicalUsdInput">دولار</label><input id="physicalUsdInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="لم يُدخل بعد"></div>
+              </div>
+              <div class="balance-values">
+                <div class="balance-line emphasis"><span>المتوقع بالليرة</span><strong data-value="expected-lbp">0 ل.س</strong></div>
+                <div class="balance-line emphasis"><span>المتوقع بالدولار</span><strong data-value="expected-usd">0 $</strong></div>
+              </div>
+            </article>
+          </div>
+          <div class="overview-grid balance-differences" style="margin-top: 18px;">
+            <article class="difference-card"><span class="card-eyebrow">مطابقة الليرة السورية</span><strong class="big-number" id="lbpDifferenceDisplayBalance">تظهر في النظرة العامة</strong><span class="difference-note" id="lbpDifferenceLabelBalance">تتحدث النتيجة مباشرة عند إدخال الرصيد الفعلي.</span></article>
+            <article class="difference-card alt"><span class="card-eyebrow">مطابقة الدولار</span><strong class="big-number" id="usdDifferenceDisplayBalance">تظهر في النظرة العامة</strong><span class="difference-note" id="usdDifferenceLabelBalance">تتحدث النتيجة مباشرة عند إدخال الرصيد الفعلي.</span></article>
+          </div>
+        </section>
 
+        <section class="page-section" id="reportsSection" aria-labelledby="reportsHeading" hidden>
+          <div class="section-heading"><div><h2 id="reportsHeading">التقارير</h2><p>مساحة مهيأة للخطوة التالية.</p></div></div>
+          <div class="placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/><path d="M3 20h18"/></svg></div><h2>التقارير قيد التجهيز</h2><p>ستبقى هذه المساحة مرتبة وجاهزة عندما يحين وقت إضافة التقارير، من دون تغيير سجل حركاتك الحالي.</p><span class="status-note">قسم مستقبلي</span></div></div>
+        </section>
+
+        <section class="page-section" id="settingsSection" aria-labelledby="settingsHeading" hidden>
+          <div class="section-heading"><div><h2 id="settingsHeading">الإعدادات</h2><p>مساحة مهيأة للخطوة التالية.</p></div></div>
+          <div class="placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></div><h2>الإعدادات قيد التجهيز</h2><p>لا توجد إعدادات جديدة في هذه المرحلة. يبقى التطبيق محلياً وبياناتك محفوظة على هذا الجهاز.</p><span class="status-note">قسم مستقبلي</span></div></div>
+        </section>
+      </main>
+    </div>
+    <script src="/app.js"></script>
+  </body>
 </html>
