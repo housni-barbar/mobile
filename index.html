@@ -66,7 +66,14 @@
               <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
             </button>
           </div>
-          <div class="clock"><span class="clock-mark" aria-hidden="true"></span><span id="liveClock">جارٍ تحميل الوقت...</span></div>
+          <div class="topbar-controls">
+            <button type="button" class="theme-toggle" id="themeToggle" aria-label="تفعيل الوضع الداكن">
+              <svg class="theme-icon moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 15.7A8.5 8.5 0 0 1 8.3 3.7 8.5 8.5 0 1 0 20.3 15.7Z"/></svg>
+              <svg class="theme-icon sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+              <span id="themeToggleLabel">الوضع الداكن</span>
+            </button>
+            <div class="clock"><span class="clock-mark" aria-hidden="true"></span><span id="liveClock">جارٍ تحميل الوقت...</span></div>
+          </div>
         </header>
 
         <section class="page-section" id="dashboardSection" aria-labelledby="dashboardHeading">

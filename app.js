@@ -1,6 +1,7 @@
 /* دفتر درج المحل — vanilla JavaScript, local-only */
 
 const storageKey = 'shop-drawer-ledger-v1';
+const themeStorageKey = 'shop-drawer-ledger-theme';
 
 const fallbackState = {
     openingBalances: { LBP: 0, USD: 0 },
@@ -297,6 +298,18 @@ function closeSidebar() {
     if (elements.sidebarToggle) elements.sidebarToggle.setAttribute('aria-expanded', 'false');
 }
 
+function applyTheme(isDark, persist = true) {
+    document.body.classList.toggle('dark-mode', isDark);
+    if (persist) localStorage.setItem(themeStorageKey, isDark ? 'dark' : 'light');
+    if (elements.themeToggleLabel) {
+        elements.themeToggleLabel.textContent = isDark ? 'الوضع الفاتح' : 'الوضع الداكن';
+    }
+    if (elements.themeToggle) {
+        elements.themeToggle.setAttribute('aria-label', isDark ? 'تفعيل الوضع الفاتح' : 'تفعيل الوضع الداكن');
+        elements.themeToggle.setAttribute('aria-pressed', String(isDark));
+    }
+}
+
 function bindEvents() {
     document.querySelectorAll('[data-section]').forEach((link) => {
         link.addEventListener('click', () => navigate(link.dataset.section));
@@ -307,6 +320,9 @@ function bindEvents() {
     });
     elements.sidebarClose.addEventListener('click', closeSidebar);
     elements.sidebarBackdrop.addEventListener('click', closeSidebar);
+    elements.themeToggle.addEventListener('click', () => {
+        applyTheme(!document.body.classList.contains('dark-mode'));
+    });
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') closeSidebar();
     });
@@ -389,6 +405,9 @@ function startApp() {
     elements.sidebarBackdrop = document.getElementById('sidebarBackdrop');
     elements.pageTitle = document.getElementById('pageTitle');
     elements.pageSubtitle = document.getElementById('pageSubtitle');
+    elements.themeToggle = document.getElementById('themeToggle');
+    elements.themeToggleLabel = document.getElementById('themeToggleLabel');
+    applyTheme(localStorage.getItem(themeStorageKey) === 'dark', false);
     setInitialInputs();
     bindEvents();
     navigate('dashboardSection', false);
