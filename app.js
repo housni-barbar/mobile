@@ -1,121 +1,65 @@
-/* دفتر درج المحل — vanilla JavaScript, local-only */
+/* دفتر راتبي — سجل شخصي محلي للراتب والمصاريف */
 
-const storageKey = 'shop-drawer-ledger-v1';
+const storageKey = 'personal-salary-ledger-v1';
 const themeStorageKey = 'shop-drawer-ledger-theme';
 
 const fallbackState = {
-    openingBalances: { LBP: 0, USD: 0 },
-    physicalCash: { LBP: '', USD: '' },
-    transactions: [],
+    salaryEntries: [],
+    expenses: [],
 };
 
 const state = loadState();
 const elements = {};
 
-function toFiniteNumber(value, fallback = 0) {
-    const numberValue = Number(value);
-    return Number.isFinite(numberValue) ? numberValue : fallback;
-}
-
-function inputValueOrEmpty(value) {
-    return value === '' || value === null || value === undefined || Number.isNaN(Number(value))
-        ? ''
-        : String(value);
-}
-
-function todayString() {
-    return new Date().toISOString().slice(0, 10);
-}
-
-function nowTimeString() {
-    return new Date().toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-    });
-}
-
 function loadState() {
     try {
         const raw = localStorage.getItem(storageKey);
-        if (!raw) return structuredState(fallbackState);
-
+        if (!raw) return { ...fallbackState };
         const parsed = JSON.parse(raw);
-
-        /* Keep compatibility with the first scalar shape:
-           openingBalance + scalar physicalCash. */
-        const hasScalarPhysicalCash = parsed.physicalCash !== undefined
-            && (typeof parsed.physicalCash !== 'object' || parsed.physicalCash === null);
-        if (parsed.openingBalance !== undefined || hasScalarPhysicalCash) {
-            return {
-                openingBalances: {
-                    LBP: toFiniteNumber(parsed.openingBalance, 0),
-                    USD: 0,
-                },
-                physicalCash: {
-                    LBP: parsed.physicalCash === '' || parsed.physicalCash === undefined
-                        ? ''
-                        : inputValueOrEmpty(parsed.physicalCash),
-                    USD: '',
-                },
-                transactions: Array.isArray(parsed.transactions) ? parsed.transactions : [],
-            };
-        }
-
         return {
-            openingBalances: {
-                ...fallbackState.openingBalances,
-                ...(parsed.openingBalances || {}),
-            },
-            physicalCash: {
-                ...fallbackState.physicalCash,
-                ...(parsed.physicalCash || {}),
-            },
-            transactions: Array.isArray(parsed.transactions) ? parsed.transactions : [],
+            salaryEntries: Array.isArray(parsed.salaryEntries) ? parsed.salaryEntries : [],
+            expenses: Array.isArray(parsed.expenses) ? parsed.expenses : [],
         };
     } catch {
-        return structuredState(fallbackState);
+        return { ...fallbackState };
     }
-}
-
-function structuredState(source) {
-    return {
-        openingBalances: { ...source.openingBalances },
-        physicalCash: { ...source.physicalCash },
-        transactions: [...source.transactions],
-    };
 }
 
 function saveState() {
     localStorage.setItem(storageKey, JSON.stringify(state));
 }
 
+function todayString() {
+    return new Date().toISOString().slice(0, 10);
+}
+
+function currentMonth() {
+    return todayString().slice(0, 7);
+}
+
+function createId() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+        return window.crypto.randomUUID();
+    }
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+function toNumber(value) {
+    const numberValue = Number(value);
+    return Number.isFinite(numberValue) ? numberValue : 0;
+}
+
 function formatMoney(amount, currency) {
-    const safeAmount = Number(amount) || 0;
     const formatter = new Intl.NumberFormat('en-US', {
         maximumFractionDigits: 2,
         minimumFractionDigits: 0,
     });
-    return currency === 'USD'
-        ? `${formatter.format(safeAmount)} $`
-        : `${formatter.format(safeAmount)} ل.س`;
-}
-
-function getTotals() {
-    return state.transactions.reduce((totals, transaction) => {
-        const signedAmount = Number(transaction.amount) || 0;
-        const currency = transaction.currency === 'USD' ? 'USD' : 'LBP';
-        if (transaction.type === 'in') totals[currency].totalIn += signedAmount;
-        else totals[currency].totalOut += signedAmount;
-        return totals;
-    }, {
-        LBP: { totalIn: 0, totalOut: 0 },
-        USD: { totalIn: 0, totalOut: 0 },
-    });
+    const value = formatter.format(toNumber(amount));
+    return currency === 'USD' ? `${value} $` : `${value} ل.س`;
 }
 
 function escapeHtml(text) {
-    return String(text)
+    return String(text ?? '')
         .replaceAll('&', '&amp;')
         .replaceAll('<', '&lt;')
         .replaceAll('>', '&gt;')
@@ -138,164 +82,6 @@ function updateClock() {
         day: 'numeric',
     });
     if (elements.liveClock) elements.liveClock.textContent = `${dateString} — ${timeString}`;
-    if (elements.timeInput) elements.timeInput.value = nowTimeString();
-}
-
-function updateDifferenceCard(valueElement, labelElement, difference, currency) {
-    if (!valueElement || !labelElement) return;
-    if (difference === null) {
-        valueElement.textContent = 'أدخل الرصيد الفعلي';
-        valueElement.className = 'big-number';
-        labelElement.textContent = `بعد إدخال الرصيد الفعلي ${currency === 'USD' ? 'بالدولار' : 'بالليرة السورية'} يظهر لك الفرق مباشرة.`;
-        return;
-    }
-    if (difference === 0) {
-        valueElement.textContent = 'مطابق';
-        valueElement.className = 'big-number good';
-        labelElement.textContent = 'الرصيد المتوقع يطابق الرصيد الفعلي تماماً.';
-        return;
-    }
-    const isPositive = difference > 0;
-    valueElement.textContent = `${isPositive ? 'فائض' : 'عجز'} ${formatMoney(Math.abs(difference), currency)}`;
-    valueElement.className = `big-number ${isPositive ? 'good' : 'bad'}`;
-    labelElement.textContent = isPositive
-        ? 'الموجود الفعلي أقل من المتوقع، راجع العمليات أو الفئات المسجلة.'
-        : 'الموجود الفعلي أكثر من المتوقع، راجع أي حركة ناقصة.';
-}
-
-function updateValueGroup(selector, value) {
-    document.querySelectorAll(selector).forEach((element) => {
-        element.textContent = value;
-    });
-}
-
-function updateSummary() {
-    const totals = getTotals();
-    const openingLbp = Number(state.openingBalances.LBP) || 0;
-    const openingUsd = Number(state.openingBalances.USD) || 0;
-    const expectedLbp = openingLbp + totals.LBP.totalIn - totals.LBP.totalOut;
-    const expectedUsd = openingUsd + totals.USD.totalIn - totals.USD.totalOut;
-    const physicalLbp = state.physicalCash.LBP === '' ? null : Number(state.physicalCash.LBP);
-    const physicalUsd = state.physicalCash.USD === '' ? null : Number(state.physicalCash.USD);
-    const lbpDifference = physicalLbp === null || Number.isNaN(physicalLbp) ? null : expectedLbp - physicalLbp;
-    const usdDifference = physicalUsd === null || Number.isNaN(physicalUsd) ? null : expectedUsd - physicalUsd;
-
-    updateValueGroup('[data-value="opening-lbp"]', formatMoney(openingLbp, 'LBP'));
-    updateValueGroup('[data-value="opening-usd"]', formatMoney(openingUsd, 'USD'));
-    updateValueGroup('[data-value="in-lbp"]', formatMoney(totals.LBP.totalIn, 'LBP'));
-    updateValueGroup('[data-value="out-lbp"]', formatMoney(totals.LBP.totalOut, 'LBP'));
-    updateValueGroup('[data-value="expected-lbp"]', formatMoney(expectedLbp, 'LBP'));
-    updateValueGroup('[data-value="in-usd"]', formatMoney(totals.USD.totalIn, 'USD'));
-    updateValueGroup('[data-value="out-usd"]', formatMoney(totals.USD.totalOut, 'USD'));
-    updateValueGroup('[data-value="expected-usd"]', formatMoney(expectedUsd, 'USD'));
-    updateValueGroup('[data-value="count"]', String(state.transactions.length));
-
-    updateDifferenceCard(elements.lbpDifferenceDisplay, elements.lbpDifferenceLabel, lbpDifference, 'LBP');
-    updateDifferenceCard(elements.usdDifferenceDisplay, elements.usdDifferenceLabel, usdDifference, 'USD');
-    updateDifferenceCard(elements.lbpDifferenceDisplayBalance, elements.lbpDifferenceLabelBalance, lbpDifference, 'LBP');
-    updateDifferenceCard(elements.usdDifferenceDisplayBalance, elements.usdDifferenceLabelBalance, usdDifference, 'USD');
-
-    elements.openingLbpInput.value = inputValueOrEmpty(openingLbp);
-    elements.openingUsdInput.value = inputValueOrEmpty(openingUsd);
-    elements.physicalLbpInput.value = inputValueOrEmpty(state.physicalCash.LBP);
-    elements.physicalUsdInput.value = inputValueOrEmpty(state.physicalCash.USD);
-}
-
-function transactionMarkup(transaction, index, includeDelete = true) {
-    const deleteCell = includeDelete
-        ? `<td class="row-actions"><button type="button" data-delete-index="${index}" aria-label="حذف حركة ${escapeHtml(transaction.category || '')}">حذف</button></td>`
-        : '';
-    return `
-        <tr>
-            <td><span class="date">${escapeHtml(transaction.date || '-')}</span><span class="time">${escapeHtml(transaction.time || '-')}</span></td>
-            <td><span class="type-pill ${transaction.type === 'in' ? 'type-in' : 'type-out'}">${transaction.type === 'in' ? 'داخل' : 'خارج'}</span></td>
-            <td>${escapeHtml(transaction.category || '-')}</td>
-            <td class="amount">${formatMoney(transaction.amount, transaction.currency)}</td>
-            <td class="note-cell">${escapeHtml(transaction.note || '-')}</td>
-            ${deleteCell}
-        </tr>
-    `;
-}
-
-function renderTransactions() {
-    if (!elements.transactionsBody) return;
-    if (state.transactions.length === 0) {
-        elements.transactionsBody.innerHTML = '<tr><td class="empty" colspan="6"><strong>لا توجد عمليات بعد</strong><span>أضف أول حركة من النموذج لتظهر هنا.</span></td></tr>';
-    } else {
-        elements.transactionsBody.innerHTML = state.transactions.map((transaction, index) => transactionMarkup(transaction, index)).join('');
-    }
-
-    if (!elements.recentTransactionsBody) return;
-    if (state.transactions.length === 0) {
-        elements.recentTransactionsBody.innerHTML = '<tr><td class="empty" colspan="5"><strong>ابدأ بتسجيل أول حركة</strong><span>ستظهر أحدث العمليات هنا.</span></td></tr>';
-    } else {
-        elements.recentTransactionsBody.innerHTML = state.transactions
-            .slice(0, 5)
-            .map((transaction, index) => transactionMarkup(transaction, index, false))
-            .join('');
-    }
-}
-
-function syncView() {
-    saveState();
-    renderTransactions();
-    updateSummary();
-}
-
-function cacheElements() {
-    [
-        'transactionForm', 'dateInput', 'timeInput', 'typeInput', 'amountInput',
-        'currencyInput', 'categoryInput', 'noteInput', 'openingLbpInput',
-        'openingUsdInput', 'physicalLbpInput', 'physicalUsdInput', 'clearDayButton',
-        'transactionsBody', 'recentTransactionsBody', 'liveClock',
-        'lbpDifferenceDisplay', 'lbpDifferenceLabel', 'usdDifferenceDisplay',
-        'usdDifferenceLabel', 'lbpDifferenceDisplayBalance', 'lbpDifferenceLabelBalance',
-        'usdDifferenceDisplayBalance', 'usdDifferenceLabelBalance',
-    ].forEach((id) => { elements[id] = document.getElementById(id); });
-}
-
-function setInitialInputs() {
-    elements.dateInput.value = todayString();
-    elements.timeInput.value = nowTimeString();
-    elements.openingLbpInput.value = inputValueOrEmpty(state.openingBalances.LBP || 0);
-    elements.openingUsdInput.value = inputValueOrEmpty(state.openingBalances.USD || 0);
-    elements.physicalLbpInput.value = inputValueOrEmpty(state.physicalCash.LBP);
-    elements.physicalUsdInput.value = inputValueOrEmpty(state.physicalCash.USD);
-}
-
-function navigate(sectionId, closeMobile = true) {
-    const target = document.getElementById(sectionId);
-    if (!target) return;
-    document.querySelectorAll('.page-section').forEach((section) => {
-        section.hidden = section.id !== sectionId;
-    });
-    document.querySelectorAll('[data-section]').forEach((link) => {
-        const active = link.dataset.section === sectionId;
-        link.classList.toggle('is-active', active);
-        link.setAttribute('aria-current', active ? 'page' : 'false');
-    });
-    const titles = {
-        dashboardSection: ['نظرة عامة', 'الصورة الواضحة لدرجك اليوم.'],
-        transactionsSection: ['الحركات', 'أضف كل دخول وخروج بسرعة ووضوح.'],
-        balancesSection: ['الأرصدة', 'قارن المتوقع بما هو موجود فعلياً.'],
-        reportsSection: ['التقارير', 'مساحة مهيأة للخطوة التالية.'],
-        settingsSection: ['الإعدادات', 'ستتوفر هنا عند الحاجة.'],
-    };
-    const title = titles[sectionId] || titles.dashboardSection;
-    document.getElementById('pageTitle').textContent = title[0];
-    document.getElementById('pageSubtitle').textContent = title[1];
-    if (closeMobile) closeSidebar();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function openSidebar() {
-    document.body.classList.add('sidebar-open');
-    elements.sidebarToggle.setAttribute('aria-expanded', 'true');
-}
-
-function closeSidebar() {
-    document.body.classList.remove('sidebar-open');
-    if (elements.sidebarToggle) elements.sidebarToggle.setAttribute('aria-expanded', 'false');
 }
 
 function applyTheme(isDark, persist = true) {
@@ -310,6 +96,292 @@ function applyTheme(isDark, persist = true) {
     }
 }
 
+function allEntries() {
+    return [
+        ...state.salaryEntries.map((entry) => ({ ...entry, kind: 'salary' })),
+        ...state.expenses.map((entry) => ({ ...entry, kind: 'expense' })),
+    ].sort((first, second) => {
+        const firstKey = `${first.date || ''}-${first.createdAt || ''}`;
+        const secondKey = `${second.date || ''}-${second.createdAt || ''}`;
+        return secondKey.localeCompare(firstKey);
+    });
+}
+
+function calculate(month = '') {
+    const salaries = month
+        ? state.salaryEntries.filter((entry) => String(entry.date || '').startsWith(month))
+        : state.salaryEntries;
+    const expenses = month
+        ? state.expenses.filter((entry) => String(entry.date || '').startsWith(month))
+        : state.expenses;
+    const salary = { LBP: 0, USD: 0 };
+    const expense = { LBP: 0, USD: 0 };
+
+    salaries.forEach((entry) => {
+        const currency = entry.currency === 'USD' ? 'USD' : 'LBP';
+        salary[currency] += toNumber(entry.amount);
+    });
+    expenses.forEach((entry) => {
+        const currency = entry.currency === 'USD' ? 'USD' : 'LBP';
+        expense[currency] += toNumber(entry.amount);
+    });
+
+    return {
+        salary,
+        expense,
+        remaining: {
+            LBP: salary.LBP - expense.LBP,
+            USD: salary.USD - expense.USD,
+        },
+        expenseCount: expenses.length,
+    };
+}
+
+function setText(id, value) {
+    if (elements[id]) elements[id].textContent = value;
+}
+
+function setAmount(id, amount, currency) {
+    const element = elements[id];
+    if (!element) return;
+    element.textContent = formatMoney(amount, currency);
+    element.classList.toggle('negative-value', toNumber(amount) < 0);
+}
+
+function setDual(id, lbp, usd) {
+    setText(id, `${formatMoney(lbp, 'LBP')} · ${formatMoney(usd, 'USD')}`);
+}
+
+function renderDashboard() {
+    const month = elements.dashboardMonthFilter.value || currentMonth();
+    const summary = calculate(month);
+    const total = calculate();
+
+    setAmount('monthlyRemainingLbp', summary.remaining.LBP, 'LBP');
+    setAmount('monthlyRemainingUsd', summary.remaining.USD, 'USD');
+    setDual('monthlySalarySummary', summary.salary.LBP, summary.salary.USD);
+    setDual('monthlyExpenseSummary', summary.expense.LBP, summary.expense.USD);
+    setText('expenseCountSummary', `${summary.expenseCount} مصروف`);
+    setAmount('totalNetLbp', total.remaining.LBP, 'LBP');
+    setAmount('totalNetUsd', total.remaining.USD, 'USD');
+
+    const recent = allEntries().slice(0, 5);
+    elements.recentEntriesBody.innerHTML = recent.length
+        ? recent.map((entry) => entryMarkup(entry, false)).join('')
+        : emptyRow(5, 'لا توجد عمليات بعد', 'أضف أول راتب أو مصروف ليظهر هنا.');
+}
+
+function entryMarkup(entry, includeDelete = true) {
+    const isSalary = entry.kind === 'salary';
+    const kindLabel = isSalary ? 'راتب' : 'مصروف';
+    const category = isSalary ? 'دفعة راتب' : (entry.category || 'أخرى');
+    const deleteCell = includeDelete
+        ? `<td class="row-actions"><button type="button" data-delete-kind="${entry.kind}" data-delete-id="${escapeHtml(entry.id)}" aria-label="حذف ${kindLabel}">حذف</button></td>`
+        : '';
+    return `
+        <tr>
+            <td><span class="date">${escapeHtml(entry.date || '-')}</span></td>
+            <td><span class="type-pill ${isSalary ? 'type-in' : 'type-out'}">${kindLabel}</span></td>
+            <td>${escapeHtml(category)}</td>
+            <td class="amount">${formatMoney(entry.amount, entry.currency)}</td>
+            <td class="note-cell">${escapeHtml(entry.note || '-')}</td>
+            ${deleteCell}
+        </tr>
+    `;
+}
+
+function emptyRow(colspan, title, description) {
+    return `<tr><td class="empty" colspan="${colspan}"><strong>${title}</strong><span>${description}</span></td></tr>`;
+}
+
+function renderEntries() {
+    const filter = elements.entriesMonthFilter.value;
+    const entries = filter
+        ? allEntries().filter((entry) => String(entry.date || '').startsWith(filter))
+        : allEntries();
+    elements.entriesBody.innerHTML = entries.length
+        ? entries.map((entry) => entryMarkup(entry)).join('')
+        : emptyRow(6, 'لا توجد عمليات في هذا العرض', 'أضف راتبًا أو مصروفًا من النماذج أعلاه.');
+
+    const month = filter || elements.dashboardMonthFilter.value || currentMonth();
+    const summary = calculate(month);
+    setAmount('entriesSalaryLbp', summary.salary.LBP, 'LBP');
+    setAmount('entriesExpenseLbp', summary.expense.LBP, 'LBP');
+    setAmount('entriesRemainingLbp', summary.remaining.LBP, 'LBP');
+    setAmount('entriesSalaryUsd', summary.salary.USD, 'USD');
+    setAmount('entriesExpenseUsd', summary.expense.USD, 'USD');
+    setAmount('entriesRemainingUsd', summary.remaining.USD, 'USD');
+}
+
+function renderSummary() {
+    const month = elements.summaryMonthFilter.value || currentMonth();
+    const summary = calculate(month);
+    const total = calculate();
+    setAmount('summarySalaryLbp', summary.salary.LBP, 'LBP');
+    setAmount('summaryExpenseLbp', summary.expense.LBP, 'LBP');
+    setAmount('summaryRemainingLbp', summary.remaining.LBP, 'LBP');
+    setAmount('summarySalaryUsd', summary.salary.USD, 'USD');
+    setAmount('summaryExpenseUsd', summary.expense.USD, 'USD');
+    setAmount('summaryRemainingUsd', summary.remaining.USD, 'USD');
+    setAmount('summaryNetLbp', total.remaining.LBP, 'LBP');
+    setAmount('summaryNetUsd', total.remaining.USD, 'USD');
+}
+
+function renderCategoryReport(container, currency, month) {
+    const totals = new Map();
+    state.expenses
+        .filter((entry) => String(entry.date || '').startsWith(month))
+        .filter((entry) => (entry.currency === 'USD' ? 'USD' : 'LBP') === currency)
+        .forEach((entry) => {
+            const category = entry.category || 'أخرى';
+            totals.set(category, (totals.get(category) || 0) + toNumber(entry.amount));
+        });
+
+    const rows = [...totals.entries()].sort((first, second) => second[1] - first[1]);
+    container.innerHTML = rows.length
+        ? rows.map(([category, amount]) => `
+            <div class="category-row">
+                <span>${escapeHtml(category)}</span>
+                <strong>${formatMoney(amount, currency)}</strong>
+            </div>
+        `).join('')
+        : '<div class="report-empty">لا توجد مصاريف مسجلة لهذا الشهر.</div>';
+}
+
+function renderReports() {
+    const month = elements.reportsMonthFilter.value || currentMonth();
+    renderCategoryReport(elements.categoryReportLbp, 'LBP', month);
+    renderCategoryReport(elements.categoryReportUsd, 'USD', month);
+}
+
+function renderAll() {
+    renderDashboard();
+    renderEntries();
+    renderSummary();
+    renderReports();
+}
+
+function syncMonthFilters(source) {
+    if (!source.value) return;
+    [elements.dashboardMonthFilter, elements.summaryMonthFilter, elements.reportsMonthFilter]
+        .forEach((filter) => { filter.value = source.value; });
+}
+
+function navigate(sectionId, closeMobile = true) {
+    const target = document.getElementById(sectionId);
+    if (!target) return;
+    document.querySelectorAll('.page-section').forEach((section) => {
+        section.hidden = section.id !== sectionId;
+    });
+    document.querySelectorAll('[data-section]').forEach((link) => {
+        const active = link.dataset.section === sectionId;
+        link.classList.toggle('is-active', active);
+        link.setAttribute('aria-current', active ? 'page' : 'false');
+    });
+    const titles = {
+        dashboardSection: ['نظرة عامة', 'اعرف أين ذهب راتبك وكم بقي معك.'],
+        entriesSection: ['الراتب والمصاريف', 'سجّل كل دفعة راتب وكل مبلغ دفعته مع سببه.'],
+        balancesSection: ['الملخص', 'قارن راتب الشهر بمصاريفك واعرف الزيادة المتراكمة.'],
+        reportsSection: ['تحليل المصاريف', 'اعرف أكثر التصنيفات التي يذهب إليها راتبك.'],
+        settingsSection: ['الإعدادات', 'تحكم بالبيانات المحلية الخاصة بدفتر راتبك.'],
+    };
+    const title = titles[sectionId] || titles.dashboardSection;
+    elements.pageTitle.textContent = title[0];
+    elements.pageSubtitle.textContent = title[1];
+    if (closeMobile) closeSidebar();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function openSidebar() {
+    document.body.classList.add('sidebar-open');
+    elements.sidebarToggle.setAttribute('aria-expanded', 'true');
+}
+
+function closeSidebar() {
+    document.body.classList.remove('sidebar-open');
+    elements.sidebarToggle.setAttribute('aria-expanded', 'false');
+}
+
+function addSalary(event) {
+    event.preventDefault();
+    const amount = toNumber(elements.salaryAmountInput.value);
+    if (amount <= 0) {
+        elements.salaryAmountInput.focus();
+        return;
+    }
+    state.salaryEntries.unshift({
+        id: createId(),
+        date: elements.salaryDateInput.value || todayString(),
+        amount,
+        currency: elements.salaryCurrencyInput.value,
+        note: elements.salaryNoteInput.value.trim(),
+        createdAt: new Date().toISOString(),
+    });
+    elements.salaryAmountInput.value = '';
+    elements.salaryNoteInput.value = '';
+    saveState();
+    renderAll();
+    elements.salaryAmountInput.focus();
+}
+
+function addExpense(event) {
+    event.preventDefault();
+    const amount = toNumber(elements.expenseAmountInput.value);
+    if (amount <= 0) {
+        elements.expenseAmountInput.focus();
+        return;
+    }
+    state.expenses.unshift({
+        id: createId(),
+        date: elements.expenseDateInput.value || todayString(),
+        amount,
+        currency: elements.expenseCurrencyInput.value,
+        category: elements.expenseCategoryInput.value,
+        note: elements.expenseNoteInput.value.trim(),
+        createdAt: new Date().toISOString(),
+    });
+    elements.expenseAmountInput.value = '';
+    elements.expenseNoteInput.value = '';
+    saveState();
+    renderAll();
+    elements.expenseAmountInput.focus();
+}
+
+function deleteEntry(kind, id) {
+    const collection = kind === 'salary' ? state.salaryEntries : state.expenses;
+    const index = collection.findIndex((entry) => entry.id === id);
+    if (index < 0) return;
+    collection.splice(index, 1);
+    saveState();
+    renderAll();
+}
+
+function cacheElements() {
+    [
+        'sidebar', 'sidebarToggle', 'sidebarClose', 'sidebarBackdrop', 'pageTitle', 'pageSubtitle',
+        'themeToggle', 'themeToggleLabel', 'liveClock', 'dashboardMonthFilter', 'summaryMonthFilter',
+        'reportsMonthFilter', 'entriesMonthFilter', 'showAllEntriesButton', 'salaryForm', 'salaryDateInput',
+        'salaryAmountInput', 'salaryCurrencyInput', 'salaryNoteInput', 'expenseForm', 'expenseDateInput',
+        'expenseAmountInput', 'expenseCurrencyInput', 'expenseCategoryInput', 'expenseNoteInput',
+        'entriesBody', 'recentEntriesBody', 'categoryReportLbp', 'categoryReportUsd', 'clearAllButton',
+        'monthlyRemainingLbp', 'monthlyRemainingUsd', 'monthlySalarySummary', 'monthlyExpenseSummary',
+        'expenseCountSummary', 'totalNetLbp', 'totalNetUsd', 'entriesSalaryLbp', 'entriesExpenseLbp',
+        'entriesRemainingLbp', 'entriesSalaryUsd', 'entriesExpenseUsd', 'entriesRemainingUsd',
+        'summarySalaryLbp', 'summaryExpenseLbp', 'summaryRemainingLbp', 'summarySalaryUsd',
+        'summaryExpenseUsd', 'summaryRemainingUsd', 'summaryNetLbp', 'summaryNetUsd',
+    ].forEach((id) => { elements[id] = document.getElementById(id); });
+}
+
+function setInitialInputs() {
+    const today = todayString();
+    elements.salaryDateInput.value = today;
+    elements.expenseDateInput.value = today;
+    elements.dashboardMonthFilter.value = currentMonth();
+    elements.summaryMonthFilter.value = currentMonth();
+    elements.reportsMonthFilter.value = currentMonth();
+    elements.entriesMonthFilter.value = currentMonth();
+}
+
 function bindEvents() {
     document.querySelectorAll('[data-section]').forEach((link) => {
         link.addEventListener('click', () => navigate(link.dataset.section));
@@ -320,100 +392,47 @@ function bindEvents() {
     });
     elements.sidebarClose.addEventListener('click', closeSidebar);
     elements.sidebarBackdrop.addEventListener('click', closeSidebar);
-    elements.themeToggle.addEventListener('click', () => {
-        applyTheme(!document.body.classList.contains('dark-mode'));
-    });
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') closeSidebar();
     });
-
-    elements.transactionForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const amount = Number(elements.amountInput.value);
-        if (!amount || amount <= 0) {
-            elements.amountInput.focus();
-            return;
-        }
-        state.openingBalances.LBP = toFiniteNumber(elements.openingLbpInput.value, 0);
-        state.openingBalances.USD = toFiniteNumber(elements.openingUsdInput.value, 0);
-        state.physicalCash.LBP = elements.physicalLbpInput.value === '' ? '' : toFiniteNumber(elements.physicalLbpInput.value, 0);
-        state.physicalCash.USD = elements.physicalUsdInput.value === '' ? '' : toFiniteNumber(elements.physicalUsdInput.value, 0);
-        state.transactions.unshift({
-            date: elements.dateInput.value || todayString(),
-            time: elements.timeInput.value || nowTimeString(),
-            type: elements.typeInput.value,
-            amount,
-            currency: elements.currencyInput.value,
-            category: elements.categoryInput.value.trim(),
-            note: elements.noteInput.value.trim(),
-        });
-        elements.amountInput.value = '';
-        elements.categoryInput.value = '';
-        elements.noteInput.value = '';
-        elements.typeInput.value = 'in';
-        elements.currencyInput.value = 'LBP';
-        elements.amountInput.focus();
-        syncView();
+    elements.themeToggle.addEventListener('click', () => {
+        applyTheme(!document.body.classList.contains('dark-mode'));
     });
-
-    elements.transactionsBody.addEventListener('click', (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLButtonElement)) return;
-        const index = Number(target.dataset.deleteIndex);
-        if (Number.isNaN(index)) return;
-        state.transactions.splice(index, 1);
-        syncView();
+    elements.salaryForm.addEventListener('submit', addSalary);
+    elements.expenseForm.addEventListener('submit', addExpense);
+    elements.entriesBody.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-delete-id]');
+        if (!button) return;
+        deleteEntry(button.dataset.deleteKind, button.dataset.deleteId);
     });
-
-    elements.clearDayButton.addEventListener('click', () => {
-        const confirmed = confirm('هل تريد تفريغ كل عمليات اليوم؟');
-        if (!confirmed) return;
-        state.transactions = [];
-        state.physicalCash = { LBP: '', USD: '' };
-        syncView();
+    elements.clearAllButton.addEventListener('click', () => {
+        if (!confirm('هل تريد حذف كل الرواتب والمصاريف؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+        state.salaryEntries = [];
+        state.expenses = [];
+        saveState();
+        renderAll();
     });
-
-    document.querySelectorAll('.chip').forEach((chip) => {
-        chip.addEventListener('click', () => {
-            elements.categoryInput.value = chip.dataset.category || '';
-            elements.categoryInput.focus();
-        });
-    });
-
-    elements.openingLbpInput.addEventListener('input', () => {
-        state.openingBalances.LBP = toFiniteNumber(elements.openingLbpInput.value, 0);
-        syncView();
-    });
-    elements.openingUsdInput.addEventListener('input', () => {
-        state.openingBalances.USD = toFiniteNumber(elements.openingUsdInput.value, 0);
-        syncView();
-    });
-    elements.physicalLbpInput.addEventListener('input', () => {
-        state.physicalCash.LBP = elements.physicalLbpInput.value === '' ? '' : toFiniteNumber(elements.physicalLbpInput.value, 0);
-        syncView();
-    });
-    elements.physicalUsdInput.addEventListener('input', () => {
-        state.physicalCash.USD = elements.physicalUsdInput.value === '' ? '' : toFiniteNumber(elements.physicalUsdInput.value, 0);
-        syncView();
+    [elements.dashboardMonthFilter, elements.summaryMonthFilter, elements.reportsMonthFilter]
+        .forEach((filter) => filter.addEventListener('change', () => {
+            syncMonthFilters(filter);
+            renderAll();
+        }));
+    elements.entriesMonthFilter.addEventListener('change', renderEntries);
+    elements.showAllEntriesButton.addEventListener('click', () => {
+        elements.entriesMonthFilter.value = '';
+        renderEntries();
     });
 }
 
 function startApp() {
     cacheElements();
-    elements.sidebarToggle = document.getElementById('sidebarToggle');
-    elements.sidebarClose = document.getElementById('sidebarClose');
-    elements.sidebarBackdrop = document.getElementById('sidebarBackdrop');
-    elements.pageTitle = document.getElementById('pageTitle');
-    elements.pageSubtitle = document.getElementById('pageSubtitle');
-    elements.themeToggle = document.getElementById('themeToggle');
-    elements.themeToggleLabel = document.getElementById('themeToggleLabel');
     applyTheme(localStorage.getItem(themeStorageKey) === 'dark', false);
     setInitialInputs();
     bindEvents();
     navigate('dashboardSection', false);
     updateClock();
     setInterval(updateClock, 1000);
-    syncView();
+    renderAll();
 }
 
 startApp();

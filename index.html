@@ -4,10 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#173a46" />
-    <meta name="description" content="دفتر درج المحل — سجل واضح وآمن لحركات النقد اليومية." />
-    <title>دفتر درج المحل</title>
-    <!-- Relative paths keep the app working when GitHub Pages serves it
-         from a repository subpath such as /mobile/. -->
+    <meta name="description" content="دفتر راتبي — تابع راتبك ومصاريفك والزيادة التي تبقى معك." />
+    <title>دفتر راتبي</title>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -15,10 +13,10 @@
     <div id="app" class="app-shell">
       <aside class="sidebar" id="sidebar" aria-label="التنقل الرئيسي">
         <div class="brand">
-          <div class="brand-mark" aria-hidden="true">M</div>
+          <div class="brand-mark" aria-hidden="true">ر</div>
           <div class="brand-copy">
-            <strong>دفتر درج المحل</strong>
-            <small>مساحة العمل اليومية</small>
+            <strong>دفتر راتبي</strong>
+            <small>مساحتك المالية الشخصية</small>
           </div>
         </div>
 
@@ -28,22 +26,22 @@
             <li><button type="button" class="nav-item is-active" data-section="dashboardSection" aria-current="page">
               <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span>نظرة عامة</span>
             </button></li>
-            <li><button type="button" class="nav-item" data-section="transactionsSection" aria-current="false">
-              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/><path d="m17 15 3 3-3 3"/></svg></span><span>الحركات</span>
+            <li><button type="button" class="nav-item" data-section="entriesSection" aria-current="false">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/><path d="m17 15 3 3-3 3"/></svg></span><span>الراتب والمصاريف</span>
             </button></li>
             <li><button type="button" class="nav-item" data-section="balancesSection" aria-current="false">
-              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m8 15 3-4 3 2 5-6"/></svg></span><span>الأرصدة</span>
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m8 15 3-4 3 2 5-6"/></svg></span><span>الملخص</span>
             </button></li>
           </ul>
         </nav>
-        <div class="side-label">قريباً</div>
-        <nav aria-label="الأقسام القادمة">
+        <div class="side-label">أدوات</div>
+        <nav aria-label="الأدوات">
           <ul class="nav-list">
             <li><button type="button" class="nav-item" data-section="reportsSection" aria-current="false">
-              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/><path d="M3 20h18"/></svg></span><span>التقارير</span>
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/><path d="M3 20h18"/></svg></span><span>تحليل المصاريف</span>
             </button></li>
             <li><button type="button" class="nav-item" data-section="settingsSection" aria-current="false">
-              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></span><span>الإعدادات</span>
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></span><span>الإعدادات</span>
             </button></li>
           </ul>
         </nav>
@@ -57,9 +55,9 @@
       <main class="content">
         <header class="topbar">
           <div>
-            <p class="page-kicker">دفتر النقد اليومي</p>
+            <p class="page-kicker">متابعة دخلك اليومي</p>
             <h1 id="pageTitle">نظرة عامة</h1>
-            <p class="page-subtitle" id="pageSubtitle">الصورة الواضحة لدرجك اليوم.</p>
+            <p class="page-subtitle" id="pageSubtitle">اعرف أين ذهب راتبك وكم بقي معك.</p>
           </div>
           <div class="topbar-actions">
             <button type="button" class="menu-toggle" id="sidebarToggle" aria-label="فتح القائمة" aria-expanded="false">
@@ -79,170 +77,151 @@
         <section class="page-section" id="dashboardSection" aria-labelledby="dashboardHeading">
           <div class="welcome">
             <div>
-              <p>متابعة سريعة</p>
-              <h2 id="dashboardHeading">كل حركة في مكانها، وكل رصيد أمامك.</h2>
+              <p>صورة شهرية واضحة</p>
+              <h2 id="dashboardHeading">راتبك مرتب، ومصاريفك تحت السيطرة.</h2>
             </div>
-            <span class="welcome-tag"><span class="footer-dot" aria-hidden="true"></span>محلي وآمن</span>
+            <span class="welcome-tag"><span class="footer-dot" aria-hidden="true"></span>شخصي ومحلي</span>
           </div>
 
-          <div class="metrics-grid" aria-label="ملخص الأرصدة">
+          <div class="month-toolbar">
+            <label for="dashboardMonthFilter">الشهر المعروض</label>
+            <input id="dashboardMonthFilter" type="month" />
+          </div>
+
+          <div class="metrics-grid" aria-label="ملخص الشهر">
             <article class="metric primary">
-              <span class="metric-label">الرصيد المتوقع — ليرة سورية</span>
-              <strong class="metric-value" data-value="expected-lbp">0 ل.س</strong>
-              <span class="metric-note">الافتتاحي + الداخل - الخارج</span>
+              <span class="metric-label">المتبقي هذا الشهر — ليرة</span>
+              <strong class="metric-value" id="monthlyRemainingLbp">0 ل.س</strong>
+              <span class="metric-note">الراتب ناقص المصاريف</span>
             </article>
-            <article class="metric">
-              <span class="metric-label">الرصيد المتوقع — دولار</span>
-              <strong class="metric-value" data-value="expected-usd">0 $</strong>
+            <article class="metric primary secondary-primary">
+              <span class="metric-label">المتبقي هذا الشهر — دولار</span>
+              <strong class="metric-value" id="monthlyRemainingUsd">0 $</strong>
               <span class="metric-note">محسوب بشكل مستقل</span>
             </article>
             <article class="metric">
-              <span class="metric-label">الرصيد الافتتاحي — ليرة</span>
-              <strong class="metric-value" id="openingLbpDisplay" data-value="opening-lbp">0 ل.س</strong>
-              <span class="metric-note">بداية اليوم</span>
+              <span class="metric-label">راتب الشهر</span>
+              <strong class="metric-value metric-dual" id="monthlySalarySummary">0 ل.س <small>· 0 $</small></strong>
+              <span class="metric-note">كل الدفعات المسجلة</span>
             </article>
             <article class="metric">
-              <span class="metric-label">عدد العمليات</span>
-              <strong class="metric-value" id="countDisplay" data-value="count">0</strong>
-              <span class="metric-note">حركة مسجلة</span>
+              <span class="metric-label">مصاريف الشهر</span>
+              <strong class="metric-value metric-dual" id="monthlyExpenseSummary">0 ل.س <small>· 0 $</small></strong>
+              <span class="metric-note" id="expenseCountSummary">0 مصروف</span>
             </article>
           </div>
 
           <div class="overview-grid">
             <article class="card">
               <div class="card-head">
-                <div><h2>آخر الحركات</h2><p>أحدث ما تم تسجيله في الدرج</p></div>
-                <button type="button" class="text-link" data-section="transactionsSection">عرض الكل</button>
+                <div><h2>آخر العمليات</h2><p>الراتب والمصاريف المسجلة مؤخرًا</p></div>
+                <button type="button" class="text-link" data-section="entriesSection">عرض الكل</button>
               </div>
               <div class="table-wrap">
                 <table>
-                  <thead><tr><th>الوقت</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th></tr></thead>
-                  <tbody id="recentTransactionsBody"></tbody>
+                  <thead><tr><th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th></tr></thead>
+                  <tbody id="recentEntriesBody"></tbody>
                 </table>
               </div>
             </article>
             <div class="side-stack">
               <article class="difference-card">
-                <span class="card-eyebrow">مطابقة الليرة السورية</span>
-                <strong class="big-number" id="lbpDifferenceDisplay">أدخل الرصيد الفعلي</strong>
-                <span class="difference-note" id="lbpDifferenceLabel">أدخل الرصيد الفعلي بالليرة السورية للمقارنة.</span>
+                <span class="card-eyebrow">صافي الزيادة المتراكمة — ليرة</span>
+                <strong class="big-number" id="totalNetLbp">0 ل.س</strong>
+                <span class="difference-note">إجمالي الراتب ناقص إجمالي المصاريف منذ البداية.</span>
               </article>
               <article class="difference-card alt">
-                <span class="card-eyebrow">مطابقة الدولار</span>
-                <strong class="big-number" id="usdDifferenceDisplay">أدخل الرصيد الفعلي</strong>
-                <span class="difference-note" id="usdDifferenceLabel">أدخل الرصيد الفعلي بالدولار للمقارنة.</span>
+                <span class="card-eyebrow">صافي الزيادة المتراكمة — دولار</span>
+                <strong class="big-number" id="totalNetUsd">0 $</strong>
+                <span class="difference-note">العملات لا يتم تحويلها أو جمعها معًا.</span>
               </article>
             </div>
           </div>
         </section>
 
-        <section class="page-section" id="transactionsSection" aria-labelledby="transactionsHeading" hidden>
+        <section class="page-section" id="entriesSection" aria-labelledby="entriesHeading" hidden>
           <div class="section-heading">
-            <div><h2 id="transactionsHeading">الحركات</h2><p>أضف كل دخول وخروج بسرعة ووضوح.</p></div>
-            <div class="section-heading-actions"><button type="button" class="ghost-button" data-section="balancesSection">تحديث الأرصدة</button></div>
+            <div><h2 id="entriesHeading">الراتب والمصاريف</h2><p>سجّل كل دفعة راتب وكل مبلغ دفعته مع سببه.</p></div>
           </div>
-          <div class="transaction-layout">
+          <div class="entry-layout">
             <article class="card form-card">
-              <h2>إدخال عملية</h2>
-              <p>مثال: بيع دولار، دفع راتب، بيع تلفون، أو سحب نقدي.</p>
-              <form id="transactionForm" class="form-grid">
-                <div class="two-col">
-                  <div class="field"><label for="dateInput">التاريخ</label><input id="dateInput" type="date"></div>
-                  <div class="field"><label for="timeInput">الوقت</label><input id="timeInput" type="text" inputmode="text" autocomplete="off" placeholder="02:42 PM"></div>
-                </div>
-                <div class="two-col">
-                  <div class="field"><label for="typeInput">نوع الحركة</label><select id="typeInput"><option value="in">داخل للدرج</option><option value="out">خارج من الدرج</option></select></div>
-                  <div class="field"><label for="amountInput">المبلغ</label><input id="amountInput" type="number" min="0" step="0.01" placeholder="مثال 1000000"></div>
-                </div>
-                <div class="two-col">
-                  <div class="field"><label for="currencyInput">العملة</label><select id="currencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
-                  <div class="field"><label for="categoryInput">التصنيف</label><input id="categoryInput" type="text" placeholder="مثال: مبيعات"></div>
-                </div>
-                <div class="field"><label for="noteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="noteInput" placeholder="تفصيل صغير يساعدك لاحقاً"></textarea></div>
-                <div class="chips" aria-label="تصنيفات سريعة">
-                  <button type="button" class="chip" data-category="مبيعات">مبيعات</button>
-                  <button type="button" class="chip" data-category="مشتريات">مشتريات</button>
-                  <button type="button" class="chip" data-category="رواتب">رواتب</button>
-                  <button type="button" class="chip" data-category="مصروف">مصروف</button>
-                  <button type="button" class="chip" data-category="أخرى">أخرى</button>
-                </div>
-                <div class="form-actions">
-                  <button type="submit" class="primary-button">إضافة الحركة</button>
-                  <button type="button" class="icon-button" id="clearDayButton" aria-label="تفريغ عمليات اليوم" title="تفريغ عمليات اليوم">
-                    <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
-                  </button>
-                </div>
+              <div class="form-card-heading"><span class="form-badge salary-badge">دخل</span><div><h2>إضافة راتب</h2><p>سجّل دفعة الراتب التي استلمتها.</p></div></div>
+              <form id="salaryForm" class="form-grid">
+                <div class="field"><label for="salaryDateInput">التاريخ</label><input id="salaryDateInput" type="date" required></div>
+                <div class="field"><label for="salaryAmountInput">المبلغ</label><input id="salaryAmountInput" type="number" min="0" step="0.01" placeholder="مثال 5000000" required></div>
+                <div class="field"><label for="salaryCurrencyInput">العملة</label><select id="salaryCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
+                <div class="field"><label for="salaryNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="salaryNoteInput" placeholder="مثال: راتب شهر آب"></textarea></div>
+                <button type="submit" class="primary-button">حفظ دفعة الراتب</button>
               </form>
             </article>
 
-            <article class="card table-card">
-              <div class="table-head"><div><h2>سجل العمليات</h2></div><span class="count-badge"><span data-value="count">0</span> حركة</span></div>
-              <div class="table-wrap">
-                <table>
-                  <thead><tr><th>الوقت</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th><th>حذف</th></tr></thead>
-                  <tbody id="transactionsBody"></tbody>
-                </table>
-              </div>
-              <div class="metrics-grid compact-metrics">
-                <article class="metric"><span class="metric-label">إجمالي الداخل — ليرة</span><strong class="metric-value" id="totalInLbpDisplay" data-value="in-lbp">0 ل.س</strong></article>
-                <article class="metric"><span class="metric-label">إجمالي الخارج — ليرة</span><strong class="metric-value" id="totalOutLbpDisplay" data-value="out-lbp">0 ل.س</strong></article>
-                <article class="metric primary"><span class="metric-label">المتوقع النهائي — ليرة</span><strong class="metric-value" id="expectedLbpDisplay" data-value="expected-lbp">0 ل.س</strong></article>
-                <article class="metric"><span class="metric-label">إجمالي الداخل — دولار</span><strong class="metric-value" id="totalInUsdDisplay" data-value="in-usd">0 $</strong></article>
-                <article class="metric"><span class="metric-label">إجمالي الخارج — دولار</span><strong class="metric-value" id="totalOutUsdDisplay" data-value="out-usd">0 $</strong></article>
-                <article class="metric"><span class="metric-label">المتوقع النهائي — دولار</span><strong class="metric-value" id="expectedUsdDisplay" data-value="expected-usd">0 $</strong></article>
-              </div>
+            <article class="card form-card">
+              <div class="form-card-heading"><span class="form-badge expense-badge">مصروف</span><div><h2>إضافة مصروف</h2><p>سجّل أين دفعت من راتبك.</p></div></div>
+              <form id="expenseForm" class="form-grid">
+                <div class="field"><label for="expenseDateInput">التاريخ</label><input id="expenseDateInput" type="date" required></div>
+                <div class="field"><label for="expenseAmountInput">المبلغ</label><input id="expenseAmountInput" type="number" min="0" step="0.01" placeholder="مثال 250000" required></div>
+                <div class="field"><label for="expenseCurrencyInput">العملة</label><select id="expenseCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
+                <div class="field"><label for="expenseCategoryInput">التصنيف</label><select id="expenseCategoryInput"><option value="طعام">طعام</option><option value="مواصلات">مواصلات</option><option value="فواتير">فواتير</option><option value="شخصي">شخصي</option><option value="عائلة">عائلة</option><option value="صحة">صحة</option><option value="ترفيه">ترفيه</option><option value="أخرى">أخرى</option></select></div>
+                <div class="field"><label for="expenseNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="expenseNoteInput" placeholder="مثال: غداء أو فاتورة كهرباء"></textarea></div>
+                <button type="submit" class="primary-button">حفظ المصروف</button>
+              </form>
             </article>
           </div>
+
+          <article class="card table-card entries-table-card">
+            <div class="table-head">
+              <div><h2>سجل العمليات</h2><p>يمكنك حذف أي عملية عند الحاجة.</p></div>
+              <div class="table-head-actions"><label for="entriesMonthFilter">عرض</label><input id="entriesMonthFilter" type="month"><button type="button" class="filter-button" id="showAllEntriesButton">الكل</button></div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th><th>حذف</th></tr></thead>
+                <tbody id="entriesBody"></tbody>
+              </table>
+            </div>
+            <div class="metrics-grid compact-metrics">
+              <article class="metric"><span class="metric-label">راتب الشهر بالليرة</span><strong class="metric-value" id="entriesSalaryLbp">0 ل.س</strong></article>
+              <article class="metric"><span class="metric-label">مصاريف الشهر بالليرة</span><strong class="metric-value" id="entriesExpenseLbp">0 ل.س</strong></article>
+              <article class="metric primary"><span class="metric-label">المتبقي بالليرة</span><strong class="metric-value" id="entriesRemainingLbp">0 ل.س</strong></article>
+              <article class="metric"><span class="metric-label">راتب الشهر بالدولار</span><strong class="metric-value" id="entriesSalaryUsd">0 $</strong></article>
+              <article class="metric"><span class="metric-label">مصاريف الشهر بالدولار</span><strong class="metric-value" id="entriesExpenseUsd">0 $</strong></article>
+              <article class="metric"><span class="metric-label">المتبقي بالدولار</span><strong class="metric-value" id="entriesRemainingUsd">0 $</strong></article>
+            </div>
+          </article>
         </section>
 
         <section class="page-section" id="balancesSection" aria-labelledby="balancesHeading" hidden>
           <div class="section-heading">
-            <div><h2 id="balancesHeading">الأرصدة</h2><p>قارن المتوقع بما هو موجود فعلياً.</p></div>
+            <div><h2 id="balancesHeading">الملخص</h2><p>قارن راتب الشهر بمصاريفك واعرف الزيادة المتراكمة.</p></div>
+            <div class="month-toolbar inline-toolbar"><label for="summaryMonthFilter">الشهر</label><input id="summaryMonthFilter" type="month"></div>
           </div>
-          <div class="balance-grid">
-            <article class="card balance-card">
-              <h2>الرصيد الافتتاحي</h2>
-              <p>القيمة التي بدأ بها الدرج اليوم.</p>
-              <div class="balance-fields">
-                <div class="balance-field"><label for="openingLbpInput">ليرة سورية</label><input id="openingLbpInput" type="number" min="0" step="0.01" inputmode="decimal"></div>
-                <div class="balance-field"><label for="openingUsdInput">دولار</label><input id="openingUsdInput" type="number" min="0" step="0.01" inputmode="decimal"></div>
-              </div>
-              <div class="balance-values">
-                <div class="balance-line"><span>الافتتاحي بالليرة</span><strong data-value="opening-lbp">0 ل.س</strong></div>
-                <div class="balance-line"><span>الافتتاحي بالدولار</span><strong data-value="opening-usd">0 $</strong></div>
-              </div>
-            </article>
-            <article class="card balance-card">
-              <h2>الرصيد الفعلي</h2>
-              <p>أدخل ما تجده في الدرج للمقارنة.</p>
-              <div class="balance-fields">
-                <div class="balance-field"><label for="physicalLbpInput">ليرة سورية</label><input id="physicalLbpInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="لم يُدخل بعد"></div>
-                <div class="balance-field"><label for="physicalUsdInput">دولار</label><input id="physicalUsdInput" type="number" min="0" step="0.01" inputmode="decimal" placeholder="لم يُدخل بعد"></div>
-              </div>
-              <div class="balance-values">
-                <div class="balance-line emphasis"><span>المتوقع بالليرة</span><strong data-value="expected-lbp">0 ل.س</strong></div>
-                <div class="balance-line emphasis"><span>المتوقع بالدولار</span><strong data-value="expected-usd">0 $</strong></div>
-              </div>
-            </article>
+          <div class="summary-grid">
+            <article class="card summary-card"><span class="card-eyebrow">ملخص الشهر — ليرة سورية</span><div class="summary-line"><span>الراتب</span><strong id="summarySalaryLbp">0 ل.س</strong></div><div class="summary-line"><span>المصاريف</span><strong id="summaryExpenseLbp">0 ل.س</strong></div><div class="summary-line highlight"><span>المتبقي</span><strong id="summaryRemainingLbp">0 ل.س</strong></div></article>
+            <article class="card summary-card"><span class="card-eyebrow">ملخص الشهر — دولار</span><div class="summary-line"><span>الراتب</span><strong id="summarySalaryUsd">0 $</strong></div><div class="summary-line"><span>المصاريف</span><strong id="summaryExpenseUsd">0 $</strong></div><div class="summary-line highlight"><span>المتبقي</span><strong id="summaryRemainingUsd">0 $</strong></div></article>
           </div>
-          <div class="overview-grid balance-differences" style="margin-top: 18px;">
-            <article class="difference-card"><span class="card-eyebrow">مطابقة الليرة السورية</span><strong class="big-number" id="lbpDifferenceDisplayBalance">تظهر في النظرة العامة</strong><span class="difference-note" id="lbpDifferenceLabelBalance">تتحدث النتيجة مباشرة عند إدخال الرصيد الفعلي.</span></article>
-            <article class="difference-card alt"><span class="card-eyebrow">مطابقة الدولار</span><strong class="big-number" id="usdDifferenceDisplayBalance">تظهر في النظرة العامة</strong><span class="difference-note" id="usdDifferenceLabelBalance">تتحدث النتيجة مباشرة عند إدخال الرصيد الفعلي.</span></article>
+          <div class="summary-grid cumulative-summary">
+            <article class="difference-card"><span class="card-eyebrow">منذ البداية — ليرة سورية</span><strong class="big-number" id="summaryNetLbp">0 ل.س</strong><span class="difference-note">صافي ما زاد معك من كل دفعات الراتب.</span></article>
+            <article class="difference-card alt"><span class="card-eyebrow">منذ البداية — دولار</span><strong class="big-number" id="summaryNetUsd">0 $</strong><span class="difference-note">صافي الدولار المتبقي بعد كل المصاريف.</span></article>
           </div>
         </section>
 
         <section class="page-section" id="reportsSection" aria-labelledby="reportsHeading" hidden>
-          <div class="section-heading"><div><h2 id="reportsHeading">التقارير</h2><p>مساحة مهيأة للخطوة التالية.</p></div></div>
-          <div class="placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/><path d="M3 20h18"/></svg></div><h2>التقارير قيد التجهيز</h2><p>ستبقى هذه المساحة مرتبة وجاهزة عندما يحين وقت إضافة التقارير، من دون تغيير سجل حركاتك الحالي.</p><span class="status-note">قسم مستقبلي</span></div></div>
+          <div class="section-heading">
+            <div><h2 id="reportsHeading">تحليل المصاريف</h2><p>اعرف أكثر التصنيفات التي يذهب إليها راتبك.</p></div>
+            <div class="month-toolbar inline-toolbar"><label for="reportsMonthFilter">الشهر</label><input id="reportsMonthFilter" type="month"></div>
+          </div>
+          <div class="summary-grid">
+            <article class="card report-card"><h2>المصاريف حسب التصنيف — ليرة</h2><div id="categoryReportLbp" class="category-list"></div></article>
+            <article class="card report-card"><h2>المصاريف حسب التصنيف — دولار</h2><div id="categoryReportUsd" class="category-list"></div></article>
+          </div>
         </section>
 
         <section class="page-section" id="settingsSection" aria-labelledby="settingsHeading" hidden>
-          <div class="section-heading"><div><h2 id="settingsHeading">الإعدادات</h2><p>مساحة مهيأة للخطوة التالية.</p></div></div>
-          <div class="placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></div><h2>الإعدادات قيد التجهيز</h2><p>لا توجد إعدادات جديدة في هذه المرحلة. يبقى التطبيق محلياً وبياناتك محفوظة على هذا الجهاز.</p><span class="status-note">قسم مستقبلي</span></div></div>
+          <div class="section-heading"><div><h2 id="settingsHeading">الإعدادات</h2><p>تحكم بالبيانات المحلية الخاصة بدفتر راتبك.</p></div></div>
+          <div class="placeholder settings-placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0-.3-1.9 1.7 1.7 0 0 0-1.6-1h-.1v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></div><h2>بياناتك محفوظة محليًا</h2><p>هذه النسخة لا تزال تعمل على الجهاز نفسه. لاحقًا يمكن ربطها بقاعدة بيانات لتظهر العمليات على الموبايل واللابتوب معًا.</p><button type="button" class="danger-button" id="clearAllButton">حذف كل البيانات</button></div></div>
         </section>
       </main>
     </div>
     <script src="./app.js"></script>
-    
   </body>
 </html>
