@@ -45,8 +45,34 @@ function createId() {
 }
 
 function toNumber(value) {
-    const numberValue = Number(value);
+    const numberValue = Number(String(value ?? '').replaceAll(',', ''));
     return Number.isFinite(numberValue) ? numberValue : 0;
+}
+
+function formatInputNumber(input) {
+    const value = input.value;
+    const cursor = input.selectionStart ?? value.length;
+    const digitsBeforeCursor = value.slice(0, cursor).replaceAll(',', '').length;
+    const cleaned = value.replaceAll(',', '').replace(/[^\d.]/g, '');
+    const firstDot = cleaned.indexOf('.');
+    const integerPart = firstDot === -1 ? cleaned : cleaned.slice(0, firstDot);
+    const decimalPart = firstDot === -1 ? '' : cleaned.slice(firstDot + 1).replace(/\./g, '').slice(0, 2);
+    const groupedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    const formatted = firstDot === -1
+        ? groupedInteger
+        : `${groupedInteger || '0'}.${decimalPart}`;
+    input.value = formatted;
+
+    let seenDigits = 0;
+    let nextCursor = formatted.length;
+    for (let index = 0; index < formatted.length; index += 1) {
+        if (formatted[index] !== ',') seenDigits += 1;
+        if (seenDigits >= digitsBeforeCursor) {
+            nextCursor = index + 1;
+            break;
+        }
+    }
+    input.setSelectionRange(nextCursor, nextCursor);
 }
 
 function formatMoney(amount, currency) {
@@ -400,6 +426,9 @@ function bindEvents() {
     });
     elements.salaryForm.addEventListener('submit', addSalary);
     elements.expenseForm.addEventListener('submit', addExpense);
+    [elements.salaryAmountInput, elements.expenseAmountInput].forEach((input) => {
+        input.addEventListener('input', () => formatInputNumber(input));
+    });
     elements.entriesBody.addEventListener('click', (event) => {
         const button = event.target.closest('[data-delete-id]');
         if (!button) return;

@@ -148,7 +148,7 @@
               <div class="form-card-heading"><span class="form-badge salary-badge">دخل</span><div><h2>إضافة راتب</h2><p>سجّل دفعة الراتب التي استلمتها.</p></div></div>
               <form id="salaryForm" class="form-grid">
                 <div class="field"><label for="salaryDateInput">التاريخ</label><input id="salaryDateInput" type="date" required></div>
-                <div class="field"><label for="salaryAmountInput">المبلغ</label><input id="salaryAmountInput" type="number" min="0" step="0.01" placeholder="مثال 5000000" required></div>
+                <div class="field"><label for="salaryAmountInput">المبلغ</label><input id="salaryAmountInput" type="text" inputmode="decimal" autocomplete="off" placeholder="مثال 5,000,000" required></div>
                 <div class="field"><label for="salaryCurrencyInput">العملة</label><select id="salaryCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
                 <div class="field"><label for="salaryNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="salaryNoteInput" placeholder="مثال: راتب شهر آب"></textarea></div>
                 <button type="submit" class="primary-button">حفظ دفعة الراتب</button>
@@ -159,7 +159,7 @@
               <div class="form-card-heading"><span class="form-badge expense-badge">مصروف</span><div><h2>إضافة مصروف</h2><p>سجّل أين دفعت من راتبك.</p></div></div>
               <form id="expenseForm" class="form-grid">
                 <div class="field"><label for="expenseDateInput">التاريخ</label><input id="expenseDateInput" type="date" required></div>
-                <div class="field"><label for="expenseAmountInput">المبلغ</label><input id="expenseAmountInput" type="number" min="0" step="0.01" placeholder="مثال 250000" required></div>
+                <div class="field"><label for="expenseAmountInput">المبلغ</label><input id="expenseAmountInput" type="text" inputmode="decimal" autocomplete="off" placeholder="مثال 250,000" required></div>
                 <div class="field"><label for="expenseCurrencyInput">العملة</label><select id="expenseCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
                 <div class="field"><label for="expenseCategoryInput">التصنيف</label><select id="expenseCategoryInput"><option value="طعام">طعام</option><option value="مواصلات">مواصلات</option><option value="فواتير">فواتير</option><option value="شخصي">شخصي</option><option value="عائلة">عائلة</option><option value="صحة">صحة</option><option value="ترفيه">ترفيه</option><option value="أخرى">أخرى</option></select></div>
                 <div class="field"><label for="expenseNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="expenseNoteInput" placeholder="مثال: غداء أو فاتورة كهرباء"></textarea></div>
