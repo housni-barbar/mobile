@@ -119,7 +119,8 @@
               </div>
               <div class="table-wrap">
                 <table>
-                  <thead><tr><th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th></tr></thead>
+                  <thead><tr>
+                    <th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th></tr></thead>
                   <tbody id="recentEntriesBody"></tbody>
                 </table>
               </div>
@@ -148,7 +149,7 @@
               <div class="form-card-heading"><span class="form-badge salary-badge">دخل</span><div><h2>إضافة راتب</h2><p>سجّل دفعة الراتب التي استلمتها.</p></div></div>
               <form id="salaryForm" class="form-grid">
                 <div class="field"><label for="salaryDateInput">التاريخ</label><input id="salaryDateInput" type="date" required></div>
-                <div class="field"><label for="salaryAmountInput">المبلغ</label><input id="salaryAmountInput" type="text" inputmode="decimal" autocomplete="off" placeholder="مثال 5,000,000" required></div>
+                <div class="field"><label for="salaryAmountInput">المبلغ</label><input id="salaryAmountInput" type="number" min="0" step="0.01" placeholder="مثال 5000000" required></div>
                 <div class="field"><label for="salaryCurrencyInput">العملة</label><select id="salaryCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
                 <div class="field"><label for="salaryNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="salaryNoteInput" placeholder="مثال: راتب شهر آب"></textarea></div>
                 <button type="submit" class="primary-button">حفظ دفعة الراتب</button>
@@ -159,7 +160,7 @@
               <div class="form-card-heading"><span class="form-badge expense-badge">مصروف</span><div><h2>إضافة مصروف</h2><p>سجّل أين دفعت من راتبك.</p></div></div>
               <form id="expenseForm" class="form-grid">
                 <div class="field"><label for="expenseDateInput">التاريخ</label><input id="expenseDateInput" type="date" required></div>
-                <div class="field"><label for="expenseAmountInput">المبلغ</label><input id="expenseAmountInput" type="text" inputmode="decimal" autocomplete="off" placeholder="مثال 250,000" required></div>
+                <div class="field"><label for="expenseAmountInput">المبلغ</label><input id="expenseAmountInput" type="number" min="0" step="0.01" placeholder="مثال 250000" required></div>
                 <div class="field"><label for="expenseCurrencyInput">العملة</label><select id="expenseCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
                 <div class="field"><label for="expenseCategoryInput">التصنيف</label><select id="expenseCategoryInput"><option value="طعام">طعام</option><option value="مواصلات">مواصلات</option><option value="فواتير">فواتير</option><option value="شخصي">شخصي</option><option value="عائلة">عائلة</option><option value="صحة">صحة</option><option value="ترفيه">ترفيه</option><option value="أخرى">أخرى</option></select></div>
                 <div class="field"><label for="expenseNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="expenseNoteInput" placeholder="مثال: غداء أو فاتورة كهرباء"></textarea></div>
@@ -218,10 +219,37 @@
 
         <section class="page-section" id="settingsSection" aria-labelledby="settingsHeading" hidden>
           <div class="section-heading"><div><h2 id="settingsHeading">الإعدادات</h2><p>تحكم بالبيانات المحلية الخاصة بدفتر راتبك.</p></div></div>
-          <div class="placeholder settings-placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0-.3-1.9 1.7 1.7 0 0 0-1.6-1h-.1v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></div><h2>بياناتك محفوظة محليًا</h2><p>هذه النسخة لا تزال تعمل على الجهاز نفسه. لاحقًا يمكن ربطها بقاعدة بيانات لتظهر العمليات على الموبايل واللابتوب معًا.</p><button type="button" class="danger-button" id="clearAllButton">حذف كل البيانات</button></div></div>
+          <div class="placeholder settings-placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0-.3-1.9 1.7 1.7 0 0 0-1.6-1h-.1v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></div><h2>بياناتك محفوظة محليًا</h2><p>هذه النسخة لا تزال تعمل على الجهاز نفسه. لاحقًا يمكن ربطها بقاعدة بيانات لتظهر العمليات على الموبايل واللابتوب معًا.</p><button type="button" class="danger-button" id="clearAllButton">حذف كل البيانات</button>
+<button type="button" class="text-link" id="logoutButton">تسجيل الخروج</button></div></div>
         </section>
       </main>
     </div>
-    <script src="./app.js"></script>
+    <!-- شاشة دخول محسّنة (أكبر، تدرج من أزرق إلى بنفسجي، ونمط دارك مود) -->
+    <div id="authScreen" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(2,8,23,0.85), rgba(4,6,10,0.95));z-index:9999;padding:28px;">
+      <div class="card form-card" style="max-width:720px;width:100%;box-shadow:0 22px 60px rgba(2,8,23,0.8);background:#051018;color:#ffffff;border:none;border-radius:32px;overflow:hidden;">
+        <div class="form-card-heading" style="padding:22px 22px;background:linear-gradient(90deg,#0b6fbf 0%,#7b2cbf 100%);border-top-left-radius:20px;border-top-right-radius:20px;border-bottom-right-radius:20px;border-bottom-left-radius:20px;">
+          <div>
+            <h2 style="margin:0 0 6px 0;color:#fff;font-size:1.35rem;">تسجيل الدخول</h2>
+            <p style="margin:0;color:rgba(255,255,255,0.92);">أدخل بريدك الإلكتروني وكلمة المرور للوصول إلى دفترك عبر أجهزتك.</p>
+          </div>
+        </div>
+        <div style="padding:20px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-bottom-left-radius:32px;border-bottom-right-radius:32px;">
+          <form id="loginForm" class="form-grid" style="gap:14px;">
+            <div class="field"><label for="loginEmailInput" style="color:rgba(255,255,255,0.95);">البريد الإلكتروني</label>
+              <input id="loginEmailInput" type="email" required style="width:100%;padding:12px;border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:#071019;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);">
+            </div>
+            <div class="field"><label for="loginPasswordInput" style="color:rgba(255,255,255,0.95);">كلمة المرور</label>
+              <input id="loginPasswordInput" type="password" required style="width:100%;padding:12px;border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:#071019;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);">
+            </div>
+            <div id="loginError" style="color:#ffb6c1;margin-top:6px;min-height:1.2em;font-size:0.98rem;"></div>
+            <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end;">
+              <button type="submit" id="loginSubmitButton" class="primary-button" style="background:linear-gradient(90deg,#0b6fbf 0%,#7b2cbf 100%);border:none;color:#fff;padding:12px 16px;border-radius:24px;box-shadow:0 6px 18px rgba(11,111,191,0.24);">تسجيل الدخول</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
   </body>
 </html>

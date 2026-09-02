@@ -1,4 +1,74 @@
 /* دفتر راتبي — سجل شخصي محلي للراتب والمصاريف */
+import { db, auth } from "./firebase.js";
+import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { collection, doc, setDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+console.log("Firebase connected:", db, "auth:", auth);
+
+let currentUserUid = null;
+let unsubscribers = { salary: null, expenses: null };
+let localBackupSaved = false;
+
+function ensureLocalBackup() {
+    try {
+        if (localBackupSaved) return;
+        const raw = localStorage.getItem(storageKey);
+        if (raw) {
+            localStorage.setItem(storageKey + '-backup', raw);
+        }
+    } catch (e) {
+        console.warn('Failed to create local backup', e);
+    }
+    localBackupSaved = true;
+}
+
+function stopFirestoreSync() {
+    if (unsubscribers.salary) { unsubscribers.salary(); unsubscribers.salary = null; }
+    if (unsubscribers.expenses) { unsubscribers.expenses(); unsubscribers.expenses = null; }
+    currentUserUid = null;
+}
+
+function startFirestoreSync(uid) {
+    stopFirestoreSync();
+    if (!uid) return;
+    currentUserUid = uid;
+
+    const salaryCol = collection(db, 'users', uid, 'salaryEntries');
+    const expenseCol = collection(db, 'users', uid, 'expenses');
+
+    // Listen to salaries
+    unsubscribers.salary = onSnapshot(query(salaryCol, orderBy('createdAt', 'desc')), (snapshot) => {
+        if (snapshot.empty) {
+            // don't overwrite local data if Firestore has nothing yet
+            return;
+        }
+        const docs = [];
+        snapshot.forEach((d) => docs.push({ id: d.id, ...d.data() }));
+        // backup local storage before overwriting
+        ensureLocalBackup();
+        state.salaryEntries = docs;
+        saveState();
+        renderAll();
+    }, (err) => {
+        console.error('Salary snapshot error', err);
+    });
+
+    // Listen to expenses
+    unsubscribers.expenses = onSnapshot(query(expenseCol, orderBy('createdAt', 'desc')), (snapshot) => {
+        if (snapshot.empty) {
+            return;
+        }
+        const docs = [];
+        snapshot.forEach((d) => docs.push({ id: d.id, ...d.data() }));
+        // backup local storage before overwriting
+        ensureLocalBackup();
+        state.expenses = docs;
+        saveState();
+        renderAll();
+    }, (err) => {
+        console.error('Expenses snapshot error', err);
+    });
+}
 
 const storageKey = 'personal-salary-ledger-v1';
 const themeStorageKey = 'shop-drawer-ledger-theme';
@@ -45,34 +115,8 @@ function createId() {
 }
 
 function toNumber(value) {
-    const numberValue = Number(String(value ?? '').replaceAll(',', ''));
+    const numberValue = Number(value);
     return Number.isFinite(numberValue) ? numberValue : 0;
-}
-
-function formatInputNumber(input) {
-    const value = input.value;
-    const cursor = input.selectionStart ?? value.length;
-    const digitsBeforeCursor = value.slice(0, cursor).replaceAll(',', '').length;
-    const cleaned = value.replaceAll(',', '').replace(/[^\d.]/g, '');
-    const firstDot = cleaned.indexOf('.');
-    const integerPart = firstDot === -1 ? cleaned : cleaned.slice(0, firstDot);
-    const decimalPart = firstDot === -1 ? '' : cleaned.slice(firstDot + 1).replace(/\./g, '').slice(0, 2);
-    const groupedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    const formatted = firstDot === -1
-        ? groupedInteger
-        : `${groupedInteger || '0'}.${decimalPart}`;
-    input.value = formatted;
-
-    let seenDigits = 0;
-    let nextCursor = formatted.length;
-    for (let index = 0; index < formatted.length; index += 1) {
-        if (formatted[index] !== ',') seenDigits += 1;
-        if (seenDigits >= digitsBeforeCursor) {
-            nextCursor = index + 1;
-            break;
-        }
-    }
-    input.setSelectionRange(nextCursor, nextCursor);
 }
 
 function formatMoney(amount, currency) {
@@ -335,19 +379,27 @@ function addSalary(event) {
         elements.salaryAmountInput.focus();
         return;
     }
-    state.salaryEntries.unshift({
+    const entry = {
         id: createId(),
         date: elements.salaryDateInput.value || todayString(),
         amount,
         currency: elements.salaryCurrencyInput.value,
         note: elements.salaryNoteInput.value.trim(),
         createdAt: new Date().toISOString(),
-    });
+    };
+    // local update
+    state.salaryEntries.unshift(entry);
     elements.salaryAmountInput.value = '';
     elements.salaryNoteInput.value = '';
     saveState();
     renderAll();
     elements.salaryAmountInput.focus();
+
+    // persist to Firestore (if signed in)
+    if (currentUserUid) {
+        const ref = doc(db, 'users', currentUserUid, 'salaryEntries', entry.id);
+        setDoc(ref, entry).catch((err) => console.error('Failed to save salary to Firestore', err));
+    }
 }
 
 function addExpense(event) {
@@ -357,7 +409,7 @@ function addExpense(event) {
         elements.expenseAmountInput.focus();
         return;
     }
-    state.expenses.unshift({
+    const entry = {
         id: createId(),
         date: elements.expenseDateInput.value || todayString(),
         amount,
@@ -365,25 +417,39 @@ function addExpense(event) {
         category: elements.expenseCategoryInput.value,
         note: elements.expenseNoteInput.value.trim(),
         createdAt: new Date().toISOString(),
-    });
+    };
+    state.expenses.unshift(entry);
     elements.expenseAmountInput.value = '';
     elements.expenseNoteInput.value = '';
     saveState();
     renderAll();
     elements.expenseAmountInput.focus();
+
+    if (currentUserUid) {
+        const ref = doc(db, 'users', currentUserUid, 'expenses', entry.id);
+        setDoc(ref, entry).catch((err) => console.error('Failed to save expense to Firestore', err));
+    }
 }
 
 function deleteEntry(kind, id) {
-    const collection = kind === 'salary' ? state.salaryEntries : state.expenses;
-    const index = collection.findIndex((entry) => entry.id === id);
+    const collectionArray = kind === 'salary' ? state.salaryEntries : state.expenses;
+    const index = collectionArray.findIndex((entry) => entry.id === id);
     if (index < 0) return;
-    collection.splice(index, 1);
+    collectionArray.splice(index, 1);
     saveState();
     renderAll();
+
+    // delete from Firestore if signed in
+    if (currentUserUid) {
+        const colName = kind === 'salary' ? 'salaryEntries' : 'expenses';
+        const ref = doc(db, 'users', currentUserUid, colName, id);
+        deleteDoc(ref).catch((err) => console.error('Failed to delete entry from Firestore', err));
+    }
 }
 
 function cacheElements() {
     [
+        'authScreen','loginForm','loginEmailInput','loginPasswordInput','loginError','loginSubmitButton','logoutButton',
         'sidebar', 'sidebarToggle', 'sidebarClose', 'sidebarBackdrop', 'pageTitle', 'pageSubtitle',
         'themeToggle', 'themeToggleLabel', 'liveClock', 'dashboardMonthFilter', 'summaryMonthFilter',
         'reportsMonthFilter', 'entriesMonthFilter', 'showAllEntriesButton', 'salaryForm', 'salaryDateInput',
@@ -395,6 +461,7 @@ function cacheElements() {
         'entriesRemainingLbp', 'entriesSalaryUsd', 'entriesExpenseUsd', 'entriesRemainingUsd',
         'summarySalaryLbp', 'summaryExpenseLbp', 'summaryRemainingLbp', 'summarySalaryUsd',
         'summaryExpenseUsd', 'summaryRemainingUsd', 'summaryNetLbp', 'summaryNetUsd',
+        'app'
     ].forEach((id) => { elements[id] = document.getElementById(id); });
 }
 
@@ -426,9 +493,6 @@ function bindEvents() {
     });
     elements.salaryForm.addEventListener('submit', addSalary);
     elements.expenseForm.addEventListener('submit', addExpense);
-    [elements.salaryAmountInput, elements.expenseAmountInput].forEach((input) => {
-        input.addEventListener('input', () => formatInputNumber(input));
-    });
     elements.entriesBody.addEventListener('click', (event) => {
         const button = event.target.closest('[data-delete-id]');
         if (!button) return;
@@ -464,4 +528,77 @@ function startApp() {
     renderAll();
 }
 
-startApp();
+// Authentication gating: show login screen if not authenticated. Use onAuthStateChanged to detect status.
+let appStarted = false;
+
+function showAuthScreen() {
+    const appEl = document.getElementById('app');
+    if (appEl) appEl.style.display = 'none';
+    if (elements.authScreen) elements.authScreen.style.display = 'flex';
+}
+
+function showAppUI() {
+    const appEl = document.getElementById('app');
+    if (elements.authScreen) elements.authScreen.style.display = 'none';
+    if (appEl) appEl.style.display = '';
+}
+
+// Attach login form handler (use direct DOM queries in case cacheElements() not run yet)
+function bindAuthUI() {
+    // Ensure auth-related elements exist in elements map
+    elements.authScreen = elements.authScreen || document.getElementById('authScreen');
+    elements.loginForm = elements.loginForm || document.getElementById('loginForm');
+    elements.loginEmailInput = elements.loginEmailInput || document.getElementById('loginEmailInput');
+    elements.loginPasswordInput = elements.loginPasswordInput || document.getElementById('loginPasswordInput');
+    elements.loginError = elements.loginError || document.getElementById('loginError');
+    elements.loginSubmitButton = elements.loginSubmitButton || document.getElementById('loginSubmitButton');
+    elements.logoutButton = elements.logoutButton || document.getElementById('logoutButton');
+
+    if (elements.loginForm && !elements.loginForm._bound) {
+        elements.loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (elements.loginError) elements.loginError.textContent = '';
+            const email = elements.loginEmailInput ? elements.loginEmailInput.value.trim() : '';
+            const password = elements.loginPasswordInput ? elements.loginPasswordInput.value : '';
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged will handle UI transition
+            } catch (err) {
+                if (elements.loginError) elements.loginError.textContent = err.message || 'فشل تسجيل الدخول';
+            }
+        });
+        elements.loginForm._bound = true;
+    }
+
+    if (elements.logoutButton && !elements.logoutButton._bound) {
+        elements.logoutButton.addEventListener('click', async () => {
+            try {
+                await signOut(auth);
+            } catch (err) {
+                // ignore for now
+                console.error('Sign out failed', err);
+            }
+        });
+        elements.logoutButton._bound = true;
+    }
+}
+
+// Start auth listener
+bindAuthUI();
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // user is signed in
+        showAppUI();
+        startFirestoreSync(user.uid);
+        if (!appStarted) {
+            // Now that user is authenticated, start app (cacheElements + bind events + render)
+            startApp();
+            appStarted = true;
+        }
+    } else {
+        // no user
+        stopFirestoreSync();
+        showAuthScreen();
+    }
+});
