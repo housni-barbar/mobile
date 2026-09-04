@@ -115,17 +115,29 @@ function createId() {
 }
 
 function toNumber(value) {
-    const numberValue = Number(value);
-    return Number.isFinite(numberValue) ? numberValue : 0;
+    try {
+        // Accept numbers with grouping separators (commas) and decimals.
+        const str = String(value ?? '').trim();
+        if (str === '') return 0;
+       // Remove any non-numeric characters except dot and minus
+       const cleaned = str.replace(/[^0-9.\-]/g, '');
+        const numberValue = Number(cleaned);
+        return Number.isFinite(numberValue) ? numberValue : 0;
+    } catch (e) {
+        return 0;
+    }
 }
 
 function formatMoney(amount, currency) {
+    // Use grouping separators without forcing unnecessary ".00" decimals.
     const formatter = new Intl.NumberFormat('en-US', {
+        useGrouping: true,
         maximumFractionDigits: 2,
         minimumFractionDigits: 0,
     });
     const value = formatter.format(toNumber(amount));
-    return currency === 'USD' ? `${value} $` : `${value} ل.س`;
+    const LRM = '\u200E'; // left-to-right mark to keep number+currency ordered in RTL pages
+    return currency === 'USD' ? `${LRM}${value} $` : `${LRM}${value} ل.س`;
 }
 
 function escapeHtml(text) {
@@ -135,6 +147,26 @@ function escapeHtml(text) {
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#39;');
+}
+
+// Remove grouping separators and keep only numeric characters, dot and minus
+function unformatInputValue(value) {
+    return String(value ?? '').replace(/[^0-9.\-]/g, '');
+}
+
+// Format an input string using grouping separators for the integer part while preserving any fractional part
+function formatInputForDisplay(value) {
+    const s = String(value ?? '').trim();
+    if (s === '') return '';
+    const negative = s.startsWith('-');
+    const cleaned = s.replace(/[^0-9.]/g, '');
+    const parts = cleaned.split('.');
+    let intPart = parts[0] || '0';
+    const fracPart = parts[1];
+    // remove leading zeros but keep a single zero when appropriate
+    intPart = intPart.replace(/^0+(?=\d)/, '');
+    const formattedInt = new Intl.NumberFormat('en-US', { useGrouping: true }).format(Number(intPart) || 0);
+    return (negative ? '-' : '') + formattedInt + (typeof fracPart !== 'undefined' ? '.' + fracPart : '');
 }
 
 function updateClock() {
@@ -214,12 +246,9 @@ function setText(id, value) {
 function setAmount(id, amount, currency) {
     const element = elements[id];
     if (!element) return;
-    element.textContent = formatMoney(amount, currency);
+    // Wrap the amount in an LTR container so numbers and currency render correctly in RTL pages
+    element.innerHTML = `<span dir="ltr">${escapeHtml(formatMoney(amount, currency))}</span>`;
     element.classList.toggle('negative-value', toNumber(amount) < 0);
-}
-
-function setDual(id, lbp, usd) {
-    setText(id, `${formatMoney(lbp, 'LBP')} · ${formatMoney(usd, 'USD')}`);
 }
 
 function renderDashboard() {
@@ -229,9 +258,11 @@ function renderDashboard() {
 
     setAmount('monthlyRemainingLbp', summary.remaining.LBP, 'LBP');
     setAmount('monthlyRemainingUsd', summary.remaining.USD, 'USD');
-    setDual('monthlySalarySummary', summary.salary.LBP, summary.salary.USD);
-    setDual('monthlyExpenseSummary', summary.expense.LBP, summary.expense.USD);
-    setText('expenseCountSummary', `${summary.expenseCount} مصروف`);
+    setAmount('monthlySalaryLbp', summary.salary.LBP, 'LBP');
+    setAmount('monthlySalaryUsd', summary.salary.USD, 'USD');
+    setAmount('monthlyExpenseLbp', summary.expense.LBP, 'LBP');
+    setAmount('monthlyExpenseUsd', summary.expense.USD, 'USD');
+    setText('expenseCountSummary', `${summary.expenseCount} مصروف مسجل`);
     setAmount('totalNetLbp', total.remaining.LBP, 'LBP');
     setAmount('totalNetUsd', total.remaining.USD, 'USD');
 
@@ -456,7 +487,8 @@ function cacheElements() {
         'salaryAmountInput', 'salaryCurrencyInput', 'salaryNoteInput', 'expenseForm', 'expenseDateInput',
         'expenseAmountInput', 'expenseCurrencyInput', 'expenseCategoryInput', 'expenseNoteInput',
         'entriesBody', 'recentEntriesBody', 'categoryReportLbp', 'categoryReportUsd', 'clearAllButton',
-        'monthlyRemainingLbp', 'monthlyRemainingUsd', 'monthlySalarySummary', 'monthlyExpenseSummary',
+        'monthlyRemainingLbp', 'monthlyRemainingUsd', 'monthlySalaryLbp', 'monthlySalaryUsd',
+        'monthlyExpenseLbp', 'monthlyExpenseUsd',
         'expenseCountSummary', 'totalNetLbp', 'totalNetUsd', 'entriesSalaryLbp', 'entriesExpenseLbp',
         'entriesRemainingLbp', 'entriesSalaryUsd', 'entriesExpenseUsd', 'entriesRemainingUsd',
         'summarySalaryLbp', 'summaryExpenseLbp', 'summaryRemainingLbp', 'summarySalaryUsd',
@@ -479,40 +511,116 @@ function bindEvents() {
     document.querySelectorAll('[data-section]').forEach((link) => {
         link.addEventListener('click', () => navigate(link.dataset.section));
     });
-    elements.sidebarToggle.addEventListener('click', () => {
-        if (document.body.classList.contains('sidebar-open')) closeSidebar();
-        else openSidebar();
-    });
-    elements.sidebarClose.addEventListener('click', closeSidebar);
-    elements.sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    if (elements.sidebarToggle) {
+        elements.sidebarToggle.addEventListener('click', () => {
+            if (document.body.classList.contains('sidebar-open')) closeSidebar();
+            else openSidebar();
+        });
+    }
+    if (elements.sidebarClose) elements.sidebarClose.addEventListener('click', closeSidebar);
+    if (elements.sidebarBackdrop) elements.sidebarBackdrop.addEventListener('click', closeSidebar);
+
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') closeSidebar();
     });
-    elements.themeToggle.addEventListener('click', () => {
+
+    if (elements.themeToggle) elements.themeToggle.addEventListener('click', () => {
         applyTheme(!document.body.classList.contains('dark-mode'));
     });
-    elements.salaryForm.addEventListener('submit', addSalary);
-    elements.expenseForm.addEventListener('submit', addExpense);
-    elements.entriesBody.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-delete-id]');
-        if (!button) return;
-        deleteEntry(button.dataset.deleteKind, button.dataset.deleteId);
+
+    if (elements.salaryForm) elements.salaryForm.addEventListener('submit', addSalary);
+    if (elements.expenseForm) elements.expenseForm.addEventListener('submit', addExpense);
+
+    // Live-format amount inputs while preserving caret position. Handles composition (IME) safely.
+    function isRawChar(ch) { return /[0-9.\-]/.test(ch); }
+    function rawIndexFromCaret(value, caret) {
+        let count = 0;
+        for (let i = 0; i < Math.min(value.length, caret); i++) {
+            if (isRawChar(value[i])) count++;
+        }
+        return count;
+    }
+    function caretFromRawIndex(formatted, rawIndex) {
+        if (rawIndex <= 0) {
+            // place caret before first raw char
+            for (let i = 0; i < formatted.length; i++) {
+                if (isRawChar(formatted[i])) return i;
+            }
+            return formatted.length;
+        }
+        let count = 0;
+        for (let i = 0; i < formatted.length; i++) {
+            if (isRawChar(formatted[i])) count++;
+            if (count === rawIndex) return i + 1;
+        }
+        return formatted.length;
+    }
+
+    ['salaryAmountInput', 'expenseAmountInput'].forEach((id) => {
+        const el = elements[id];
+        if (!el) return;
+        // during IME composition, skip formatting
+        el.addEventListener('compositionstart', () => { el._composing = true; });
+        el.addEventListener('compositionend', () => { el._composing = false; /* trigger a format pass */ el.dispatchEvent(new Event('input')); });
+
+        el.addEventListener('focus', () => {
+            el.value = unformatInputValue(el.value);
+            // move caret to end
+            setTimeout(() => {
+                try { el.setSelectionRange(el.value.length, el.value.length); } catch (e) {}
+            }, 0);
+        });
+
+        el.addEventListener('input', () => {
+            if (el._composing) return;
+            const original = el.value;
+            const sel = el.selectionStart != null ? el.selectionStart : original.length;
+            const rawIndex = rawIndexFromCaret(original, sel);
+            const raw = unformatInputValue(original);
+            const formatted = formatInputForDisplay(raw);
+            if (formatted === original) {
+                // no change
+                el._lastRaw = raw;
+                return;
+            }
+            el.value = formatted;
+            const newCaret = caretFromRawIndex(formatted, rawIndex);
+            try { el.setSelectionRange(newCaret, newCaret); } catch (e) {}
+            el._lastRaw = raw;
+        });
+
+        el.addEventListener('blur', () => {
+            // final formatting on blur
+            el.value = formatInputForDisplay(unformatInputValue(el.value));
+        });
     });
-    elements.clearAllButton.addEventListener('click', () => {
+
+    if (elements.entriesBody) {
+        elements.entriesBody.addEventListener('click', (event) => {
+            const button = event.target.closest('[data-delete-id]');
+            if (!button) return;
+            deleteEntry(button.dataset.deleteKind, button.dataset.deleteId);
+        });
+    }
+
+    if (elements.clearAllButton) elements.clearAllButton.addEventListener('click', () => {
         if (!confirm('هل تريد حذف كل الرواتب والمصاريف؟ لا يمكن التراجع عن هذا الإجراء.')) return;
         state.salaryEntries = [];
         state.expenses = [];
         saveState();
         renderAll();
     });
+
     [elements.dashboardMonthFilter, elements.summaryMonthFilter, elements.reportsMonthFilter]
-        .forEach((filter) => filter.addEventListener('change', () => {
+        .forEach((filter) => { if (filter) filter.addEventListener('change', () => {
             syncMonthFilters(filter);
             renderAll();
-        }));
-    elements.entriesMonthFilter.addEventListener('change', renderEntries);
-    elements.showAllEntriesButton.addEventListener('click', () => {
-        elements.entriesMonthFilter.value = '';
+        }); });
+
+    if (elements.entriesMonthFilter) elements.entriesMonthFilter.addEventListener('change', renderEntries);
+    if (elements.showAllEntriesButton) elements.showAllEntriesButton.addEventListener('click', () => {
+        if (elements.entriesMonthFilter) elements.entriesMonthFilter.value = '';
         renderEntries();
     });
 }
@@ -533,14 +641,29 @@ let appStarted = false;
 
 function showAuthScreen() {
     const appEl = document.getElementById('app');
-    if (appEl) appEl.style.display = 'none';
-    if (elements.authScreen) elements.authScreen.style.display = 'flex';
+    if (appEl) {
+        appEl.style.display = 'none';
+        appEl.setAttribute('aria-hidden', 'true');
+    }
+    if (elements.authScreen) {
+        elements.authScreen.style.display = 'flex';
+        elements.authScreen.setAttribute('aria-hidden', 'false');
+        // focus the first input for convenience
+        const email = elements.loginEmailInput || document.getElementById('loginEmailInput');
+        if (email) email.focus();
+    }
 }
 
 function showAppUI() {
     const appEl = document.getElementById('app');
-    if (elements.authScreen) elements.authScreen.style.display = 'none';
-    if (appEl) appEl.style.display = '';
+    if (elements.authScreen) {
+        elements.authScreen.style.display = 'none';
+        elements.authScreen.setAttribute('aria-hidden', 'true');
+    }
+    if (appEl) {
+        appEl.style.display = '';
+        appEl.setAttribute('aria-hidden', 'false');
+    }
 }
 
 // Attach login form handler (use direct DOM queries in case cacheElements() not run yet)

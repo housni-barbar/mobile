@@ -100,14 +100,24 @@
               <span class="metric-note">محسوب بشكل مستقل</span>
             </article>
             <article class="metric">
-              <span class="metric-label">راتب الشهر</span>
-              <strong class="metric-value metric-dual" id="monthlySalarySummary">0 ل.س <small>· 0 $</small></strong>
-              <span class="metric-note">كل الدفعات المسجلة</span>
+              <span class="metric-label">راتب الشهر — ليرة</span>
+              <strong class="metric-value" id="monthlySalaryLbp">0 ل.س</strong>
+              <span class="metric-note">كل الدفعات بالليرة</span>
             </article>
             <article class="metric">
-              <span class="metric-label">مصاريف الشهر</span>
-              <strong class="metric-value metric-dual" id="monthlyExpenseSummary">0 ل.س <small>· 0 $</small></strong>
-              <span class="metric-note" id="expenseCountSummary">0 مصروف</span>
+              <span class="metric-label">راتب الشهر — دولار</span>
+              <strong class="metric-value" id="monthlySalaryUsd">0 $</strong>
+              <span class="metric-note">كل الدفعات بالدولار</span>
+            </article>
+            <article class="metric">
+              <span class="metric-label">مصاريف الشهر — ليرة</span>
+              <strong class="metric-value" id="monthlyExpenseLbp">0 ل.س</strong>
+              <span class="metric-note" id="expenseCountSummary">كل المصاريف بالليرة</span>
+            </article>
+            <article class="metric">
+              <span class="metric-label">مصاريف الشهر — دولار</span>
+              <strong class="metric-value" id="monthlyExpenseUsd">0 $</strong>
+              <span class="metric-note">كل المصاريف بالدولار</span>
             </article>
           </div>
 
@@ -149,7 +159,7 @@
               <div class="form-card-heading"><span class="form-badge salary-badge">دخل</span><div><h2>إضافة راتب</h2><p>سجّل دفعة الراتب التي استلمتها.</p></div></div>
               <form id="salaryForm" class="form-grid">
                 <div class="field"><label for="salaryDateInput">التاريخ</label><input id="salaryDateInput" type="date" required></div>
-                <div class="field"><label for="salaryAmountInput">المبلغ</label><input id="salaryAmountInput" type="number" min="0" step="0.01" placeholder="مثال 5000000" required></div>
+                <div class="field"><label for="salaryAmountInput">المبلغ</label><input id="salaryAmountInput" type="text" inputmode="decimal" placeholder="مثال 500,000" required></div>
                 <div class="field"><label for="salaryCurrencyInput">العملة</label><select id="salaryCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
                 <div class="field"><label for="salaryNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="salaryNoteInput" placeholder="مثال: راتب شهر آب"></textarea></div>
                 <button type="submit" class="primary-button">حفظ دفعة الراتب</button>
@@ -160,7 +170,7 @@
               <div class="form-card-heading"><span class="form-badge expense-badge">مصروف</span><div><h2>إضافة مصروف</h2><p>سجّل أين دفعت من راتبك.</p></div></div>
               <form id="expenseForm" class="form-grid">
                 <div class="field"><label for="expenseDateInput">التاريخ</label><input id="expenseDateInput" type="date" required></div>
-                <div class="field"><label for="expenseAmountInput">المبلغ</label><input id="expenseAmountInput" type="number" min="0" step="0.01" placeholder="مثال 250000" required></div>
+                <div class="field"><label for="expenseAmountInput">المبلغ</label><input id="expenseAmountInput" type="text" inputmode="decimal" placeholder="مثال 250,000" required></div>
                 <div class="field"><label for="expenseCurrencyInput">العملة</label><select id="expenseCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
                 <div class="field"><label for="expenseCategoryInput">التصنيف</label><select id="expenseCategoryInput"><option value="طعام">طعام</option><option value="مواصلات">مواصلات</option><option value="فواتير">فواتير</option><option value="شخصي">شخصي</option><option value="عائلة">عائلة</option><option value="صحة">صحة</option><option value="ترفيه">ترفيه</option><option value="أخرى">أخرى</option></select></div>
                 <div class="field"><label for="expenseNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="expenseNoteInput" placeholder="مثال: غداء أو فاتورة كهرباء"></textarea></div>
@@ -225,7 +235,7 @@
       </main>
     </div>
     <!-- شاشة دخول محسّنة (أكبر، تدرج من أزرق إلى بنفسجي، ونمط دارك مود) -->
-    <div id="authScreen" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(2,8,23,0.85), rgba(4,6,10,0.95));z-index:9999;padding:28px;">
+    <div id="authScreen" role="dialog" aria-modal="true" aria-hidden="true" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(2,8,23,0.85), rgba(4,6,10,0.95));z-index:9999;padding:28px;">
       <div class="card form-card" style="max-width:720px;width:100%;box-shadow:0 22px 60px rgba(2,8,23,0.8);background:#051018;color:#ffffff;border:none;border-radius:32px;overflow:hidden;">
         <div class="form-card-heading" style="padding:22px 22px;background:linear-gradient(90deg,#0b6fbf 0%,#7b2cbf 100%);border-top-left-radius:20px;border-top-right-radius:20px;border-bottom-right-radius:20px;border-bottom-left-radius:20px;">
           <div>
@@ -236,10 +246,10 @@
         <div style="padding:20px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-bottom-left-radius:32px;border-bottom-right-radius:32px;">
           <form id="loginForm" class="form-grid" style="gap:14px;">
             <div class="field"><label for="loginEmailInput" style="color:rgba(255,255,255,0.95);">البريد الإلكتروني</label>
-              <input id="loginEmailInput" type="email" required style="width:100%;padding:12px;border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:#071019;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);">
+              <input id="loginEmailInput" type="email" autocomplete="email" required style="width:100%;padding:12px;border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:#071019;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);">
             </div>
             <div class="field"><label for="loginPasswordInput" style="color:rgba(255,255,255,0.95);">كلمة المرور</label>
-              <input id="loginPasswordInput" type="password" required style="width:100%;padding:12px;border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:#071019;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);">
+              <input id="loginPasswordInput" type="password" autocomplete="current-password" required style="width:100%;padding:12px;border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:#071019;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);">
             </div>
             <div id="loginError" style="color:#ffb6c1;margin-top:6px;min-height:1.2em;font-size:0.98rem;"></div>
             <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end;">
