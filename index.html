@@ -152,7 +152,7 @@
 
         <section class="page-section" id="entriesSection" aria-labelledby="entriesHeading" hidden>
           <div class="section-heading">
-            <div><h2 id="entriesHeading">الراتب والمصاريف</h2><p>سجّل كل دفعة راتب وكل مبلغ دفعته مع سببه.</p></div>
+            <div><h2 id="entriesHeading"></h2><p></p></div>
           </div>
           <div class="entry-layout">
             <article class="card form-card">
@@ -203,7 +203,7 @@
 
         <section class="page-section" id="balancesSection" aria-labelledby="balancesHeading" hidden>
           <div class="section-heading">
-            <div><h2 id="balancesHeading">الملخص</h2><p>قارن راتب الشهر بمصاريفك واعرف الزيادة المتراكمة.</p></div>
+            <div><h2 id="balancesHeading"></h2><p></p></div>
             <div class="month-toolbar inline-toolbar"><label for="summaryMonthFilter">الشهر</label><input id="summaryMonthFilter" type="month"></div>
           </div>
           <div class="summary-grid">
@@ -218,7 +218,7 @@
 
         <section class="page-section" id="reportsSection" aria-labelledby="reportsHeading" hidden>
           <div class="section-heading">
-            <div><h2 id="reportsHeading">تحليل المصاريف</h2><p>اعرف أكثر التصنيفات التي يذهب إليها راتبك.</p></div>
+            <div><h2 id="reportsHeading"></h2><p></p></div>
             <div class="month-toolbar inline-toolbar"><label for="reportsMonthFilter">الشهر</label><input id="reportsMonthFilter" type="month"></div>
           </div>
           <div class="summary-grid">
@@ -228,9 +228,8 @@
         </section>
 
         <section class="page-section" id="settingsSection" aria-labelledby="settingsHeading" hidden>
-          <div class="section-heading"><div><h2 id="settingsHeading">الإعدادات</h2><p>تحكم بالبيانات المحلية الخاصة بدفتر راتبك.</p></div></div>
-          <div class="placeholder settings-placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0-.3-1.9 1.7 1.7 0 0 0-1.6-1h-.1v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></div><h2>بياناتك محفوظة محليًا</h2><p>هذه النسخة لا تزال تعمل على الجهاز نفسه. لاحقًا يمكن ربطها بقاعدة بيانات لتظهر العمليات على الموبايل واللابتوب معًا.</p><button type="button" class="danger-button" id="clearAllButton">حذف كل البيانات</button>
-<button type="button" class="text-link" id="logoutButton">تسجيل الخروج</button></div></div>
+          <div class="placeholder settings-placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0-.3-1.9 1.7 1.7 0 0 0-1.6-1h-.1v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></div><h2>بياناتك محفوظة </h2><p>هذه النسخة الان مزامنة بين اجهزتك</p><button type="button" class="danger-button" id="clearAllButton">حذف كل البيانات</button>
+          <button type="button" class="primary-button" id="logoutButton">تسجيل الخروج</button></div></div>
         </section>
       </main>
     </div>
