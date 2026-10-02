@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#173a46" />
+    <meta name="description" content="دفتر راتبي — تابع راتبك ومصاريفك والزيادة التي تبقى معك." />
+    <title>دفتر راتبي</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="التنقل الرئيسي">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <div class="brand-copy">
+            <strong>الراتب</strong>
+            <small>مساحتك المالية الشخصية</small>
+          </div>
+        </div>
+
+        <div class="side-label">مساحة العمل</div>
+        <nav aria-label="أقسام التطبيق">
+          <ul class="nav-list">
+            <li><button type="button" class="nav-item is-active" data-section="dashboardSection" aria-current="page">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span><span>نظرة عامة</span>
+            </button></li>
+            <li><button type="button" class="nav-item" data-section="entriesSection" aria-current="false">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/><path d="m17 15 3 3-3 3"/></svg></span><span>الراتب والمصاريف</span>
+            </button></li>
+            <li><button type="button" class="nav-item" data-section="balancesSection" aria-current="false">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="m8 15 3-4 3 2 5-6"/></svg></span><span>الملخص</span>
+            </button></li>
+          </ul>
+        </nav>
+        <div class="side-label">أدوات</div>
+        <nav aria-label="الأدوات">
+          <ul class="nav-list">
+            <li><button type="button" class="nav-item" data-section="reportsSection" aria-current="false">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V10M12 20V4M19 20v-7"/><path d="M3 20h18"/></svg></span><span>تحليل المصاريف</span>
+            </button></li>
+            <li><button type="button" class="nav-item" data-section="settingsSection" aria-current="false">
+              <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></span><span>الإعدادات</span>
+            </button></li>
+          </ul>
+        </nav>
+        <div class="sidebar-footer"><span class="footer-dot" aria-hidden="true"></span><span>البيانات محفوظة على هذا الجهاز</span></div>
+        <button type="button" class="sidebar-close" id="sidebarClose" aria-label="إغلاق القائمة">
+          <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </aside>
+      <div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <p class="page-kicker">متابعة دخلك اليومي</p>
+            <h1 id="pageTitle">نظرة عامة</h1>
+            <p class="page-subtitle" id="pageSubtitle">اعرف أين ذهب راتبك وكم بقي معك.</p>
+          </div>
+          <div class="topbar-actions">
+            <button type="button" class="menu-toggle" id="sidebarToggle" aria-label="فتح القائمة" aria-expanded="false">
+              <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+            </button>
+          </div>
+          <div class="topbar-controls">
+            <button type="button" class="theme-toggle" id="themeToggle" aria-label="تفعيل الوضع الداكن">
+              <svg class="theme-icon moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.3 15.7A8.5 8.5 0 0 1 8.3 3.7 8.5 8.5 0 1 0 20.3 15.7Z"/></svg>
+              <svg class="theme-icon sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+              <span id="themeToggleLabel">الوضع الداكن</span>
+            </button>
+            <div class="clock"><span class="clock-mark" aria-hidden="true"></span><span id="liveClock">جارٍ تحميل الوقت...</span></div>
+          </div>
+        </header>
+
+        <section class="page-section" id="dashboardSection" aria-labelledby="dashboardHeading">
+          <div class="welcome">
+            <div>
+              <p>صورة شهرية واضحة</p>
+              <h2 id="dashboardHeading">راتبك مرتب، ومصاريفك تحت السيطرة.</h2>
+            </div>
+            <span class="welcome-tag"><span class="footer-dot" aria-hidden="true"></span>شخصي ومحلي</span>
+          </div>
+
+          <div class="month-toolbar">
+            <label for="dashboardMonthFilter">الشهر المعروض</label>
+            <input id="dashboardMonthFilter" type="month" />
+          </div>
+
+          <div class="metrics-grid" aria-label="ملخص الشهر">
+            <article class="metric primary">
+              <span class="metric-label">المتبقي هذا الشهر — ليرة</span>
+              <strong class="metric-value" id="monthlyRemainingLbp">0 ل.س</strong>
+              <span class="metric-note">الراتب ناقص المصاريف مع ترحيل السابق</span>
+            </article>
+            <article class="metric primary secondary-primary">
+              <span class="metric-label">المتبقي هذا الشهر — دولار</span>
+              <strong class="metric-value" id="monthlyRemainingUsd">0 $</strong>
+              <span class="metric-note">مع ترحيل السابق ومحسوب بشكل مستقل</span>
+            </article>
+            <article class="metric">
+              <span class="metric-label">راتب الشهر — ليرة</span>
+              <strong class="metric-value" id="monthlySalaryLbp">0 ل.س</strong>
+              <span class="metric-note">كل الدفعات بالليرة</span>
+            </article>
+            <article class="metric">
+              <span class="metric-label">راتب الشهر — دولار</span>
+              <strong class="metric-value" id="monthlySalaryUsd">0 $</strong>
+              <span class="metric-note">كل الدفعات بالدولار</span>
+            </article>
+            <article class="metric">
+              <span class="metric-label">مصاريف الشهر — ليرة</span>
+              <strong class="metric-value" id="monthlyExpenseLbp">0 ل.س</strong>
+              <span class="metric-note" id="expenseCountSummary">كل المصاريف بالليرة</span>
+            </article>
+            <article class="metric">
+              <span class="metric-label">مصاريف الشهر — دولار</span>
+              <strong class="metric-value" id="monthlyExpenseUsd">0 $</strong>
+              <span class="metric-note">كل المصاريف بالدولار</span>
+            </article>
+          </div>
+
+          <div class="overview-grid">
+            <article class="card">
+              <div class="card-head">
+                <div><h2>آخر العمليات</h2><p>الراتب والمصاريف المسجلة مؤخرًا</p></div>
+                <button type="button" class="text-link" data-section="entriesSection">عرض الكل</button>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr>
+                    <th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th></tr></thead>
+                  <tbody id="recentEntriesBody"></tbody>
+                </table>
+              </div>
+            </article>
+            <div class="side-stack">
+              <article class="difference-card">
+                <span class="card-eyebrow">صافي الزيادة المتراكمة — ليرة</span>
+                <strong class="big-number" id="totalNetLbp">0 ل.س</strong>
+                <span class="difference-note">إجمالي الراتب ناقص إجمالي المصاريف منذ البداية.</span>
+              </article>
+              <article class="difference-card alt">
+                <span class="card-eyebrow">صافي الزيادة المتراكمة — دولار</span>
+                <strong class="big-number" id="totalNetUsd">0 $</strong>
+                <span class="difference-note">العملات لا يتم تحويلها أو جمعها معًا.</span>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="page-section" id="entriesSection" aria-labelledby="entriesHeading" hidden>
+          <div class="section-heading">
+            <div><h2 id="entriesHeading"></h2><p></p></div>
+          </div>
+          <div class="entry-layout">
+            <article class="card form-card">
+              <div class="form-card-heading"><span class="form-badge salary-badge">دخل</span><div><h2>إضافة راتب</h2><p>سجّل دفعة الراتب التي استلمتها.</p></div></div>
+              <form id="salaryForm" class="form-grid">
+                <div class="field"><label for="salaryDateInput">التاريخ</label><input id="salaryDateInput" type="date" required></div>
+                <div class="field"><label for="salaryAmountInput">المبلغ</label><input id="salaryAmountInput" type="text" inputmode="decimal" placeholder="مثال 500,000" required></div>
+                <div class="field"><label for="salaryCurrencyInput">العملة</label><select id="salaryCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
+                <div class="field"><label for="salaryNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="salaryNoteInput" placeholder="مثال: راتب شهر آب"></textarea></div>
+                <button type="submit" class="primary-button">حفظ دفعة الراتب</button>
+              </form>
+            </article>
+
+            <article class="card form-card">
+              <div class="form-card-heading"><span class="form-badge expense-badge">مصروف</span><div><h2>إضافة مصروف</h2><p>سجّل أين دفعت من راتبك.</p></div></div>
+              <form id="expenseForm" class="form-grid">
+                <div class="field"><label for="expenseDateInput">التاريخ</label><input id="expenseDateInput" type="date" required></div>
+                <div class="field"><label for="expenseAmountInput">المبلغ</label><input id="expenseAmountInput" type="text" inputmode="decimal" placeholder="مثال 250,000" required></div>
+                <div class="field"><label for="expenseCurrencyInput">العملة</label><select id="expenseCurrencyInput"><option value="LBP">ليرة سورية</option><option value="USD">دولار</option></select></div>
+                <div class="field"><label for="expenseCategoryInput">التصنيف</label><select id="expenseCategoryInput"><option value="طعام">طعام</option><option value="مواصلات">مواصلات</option><option value="فواتير">فواتير</option><option value="شخصي">شخصي</option><option value="عائلة">عائلة</option><option value="صحة">صحة</option><option value="ترفيه">ترفيه</option><option value="أخرى">أخرى</option></select></div>
+                <div class="field"><label for="expenseNoteInput">ملاحظة <span class="muted">(اختياري)</span></label><textarea id="expenseNoteInput" placeholder="مثال: غداء أو فاتورة كهرباء"></textarea></div>
+                <button type="submit" class="primary-button">حفظ المصروف</button>
+              </form>
+            </article>
+          </div>
+
+          <article class="card table-card entries-table-card">
+            <div class="table-head">
+              <div><h2>سجل العمليات</h2><p>يمكنك حذف أي عملية عند الحاجة.</p></div>
+              <div class="table-head-actions"><label for="entriesMonthFilter">عرض</label><input id="entriesMonthFilter" type="month"><button type="button" class="filter-button" id="showAllEntriesButton">الكل</button></div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>المبلغ</th><th>ملاحظة</th><th>حذف</th></tr></thead>
+                <tbody id="entriesBody"></tbody>
+              </table>
+            </div>
+            <div class="metrics-grid compact-metrics">
+              <article class="metric"><span class="metric-label">راتب الشهر بالليرة</span><strong class="metric-value" id="entriesSalaryLbp">0 ل.س</strong></article>
+              <article class="metric"><span class="metric-label">مصاريف الشهر بالليرة</span><strong class="metric-value" id="entriesExpenseLbp">0 ل.س</strong></article>
+              <article class="metric primary"><span class="metric-label">المتبقي بالليرة مع الترحيل</span><strong class="metric-value" id="entriesRemainingLbp">0 ل.س</strong></article>
+              <article class="metric"><span class="metric-label">راتب الشهر بالدولار</span><strong class="metric-value" id="entriesSalaryUsd">0 $</strong></article>
+              <article class="metric"><span class="metric-label">مصاريف الشهر بالدولار</span><strong class="metric-value" id="entriesExpenseUsd">0 $</strong></article>
+              <article class="metric"><span class="metric-label">المتبقي بالدولار مع الترحيل</span><strong class="metric-value" id="entriesRemainingUsd">0 $</strong></article>
+            </div>
+          </article>
+        </section>
+
+        <section class="page-section" id="balancesSection" aria-labelledby="balancesHeading" hidden>
+          <div class="section-heading">
+            <div><h2 id="balancesHeading"></h2><p></p></div>
+            <div class="month-toolbar inline-toolbar"><label for="summaryMonthFilter">الشهر</label><input id="summaryMonthFilter" type="month"></div>
+          </div>
+          <div class="summary-grid">
+            <article class="card summary-card"><span class="card-eyebrow">ملخص الشهر — ليرة سورية</span><div class="summary-line"><span>الراتب</span><strong id="summarySalaryLbp">0 ل.س</strong></div><div class="summary-line"><span>المصاريف</span><strong id="summaryExpenseLbp">0 ل.س</strong></div><div class="summary-line highlight"><span>المتبقي مع الترحيل</span><strong id="summaryRemainingLbp">0 ل.س</strong></div></article>
+            <article class="card summary-card"><span class="card-eyebrow">ملخص الشهر — دولار</span><div class="summary-line"><span>الراتب</span><strong id="summarySalaryUsd">0 $</strong></div><div class="summary-line"><span>المصاريف</span><strong id="summaryExpenseUsd">0 $</strong></div><div class="summary-line highlight"><span>المتبقي مع الترحيل</span><strong id="summaryRemainingUsd">0 $</strong></div></article>
+          </div>
+          <div class="summary-grid cumulative-summary">
+            <article class="difference-card"><span class="card-eyebrow">منذ البداية — ليرة سورية</span><strong class="big-number" id="summaryNetLbp">0 ل.س</strong><span class="difference-note">صافي ما زاد معك من كل دفعات الراتب.</span></article>
+            <article class="difference-card alt"><span class="card-eyebrow">منذ البداية — دولار</span><strong class="big-number" id="summaryNetUsd">0 $</strong><span class="difference-note">صافي الدولار المتبقي بعد كل المصاريف.</span></article>
+          </div>
+        </section>
+
+        <section class="page-section" id="reportsSection" aria-labelledby="reportsHeading" hidden>
+          <div class="section-heading">
+            <div><h2 id="reportsHeading"></h2><p></p></div>
+            <div class="month-toolbar inline-toolbar"><label for="reportsMonthFilter">الشهر</label><input id="reportsMonthFilter" type="month"></div>
+          </div>
+          <div class="summary-grid">
+            <article class="card report-card"><h2>المصاريف حسب التصنيف — ليرة</h2><div id="categoryReportLbp" class="category-list"></div></article>
+            <article class="card report-card"><h2>المصاريف حسب التصنيف — دولار</h2><div id="categoryReportUsd" class="category-list"></div></article>
+          </div>
+        </section>
+
+        <section class="page-section" id="settingsSection" aria-labelledby="settingsHeading" hidden>
+          <div class="placeholder settings-placeholder"><div><div class="placeholder-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L7 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H5.7v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0-.3-1.9 1.7 1.7 0 0 0-1.6-1h-.1v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L7 8.6l1.7-1.7.1.1a1.7 1.7 0 0 0 1.9-.3 1.7 1.7 0 0 0 1-1.6v-.1h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1V14h-.1a1.7 1.7 0 0 0-1.6 1Z"/></svg></div><h2>بياناتك محفوظة </h2><p>هذه النسخة الان مزامنة بين اجهزتك</p><button type="button" class="danger-button" id="clearAllButton">حذف كل البيانات</button>
+          <button type="button" class="primary-button" id="logoutButton">تسجيل الخروج</button></div></div>
+        </section>
+      </main>
+    </div>
+    <!-- شاشة دخول محسّنة (أكبر، تدرج من أزرق إلى بنفسجي، ونمط دارك مود) -->
+    <div id="authScreen" role="dialog" aria-modal="true" aria-hidden="true" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(2,8,23,0.85), rgba(4,6,10,0.95));z-index:9999;padding:28px;">
+      <div class="card form-card" style="max-width:720px;width:100%;box-shadow:0 22px 60px rgba(2,8,23,0.8);background:#051018;color:#ffffff;border:none;border-radius:32px;overflow:hidden;">
+        <div class="form-card-heading" style="padding:22px 22px;background:linear-gradient(90deg,#0b6fbf 0%,#7b2cbf 100%);border-top-left-radius:20px;border-top-right-radius:20px;border-bottom-right-radius:20px;border-bottom-left-radius:20px;">
+          <div>
+            <h2 style="margin:0 0 6px 0;color:#fff;font-size:1.35rem;">تسجيل الدخول</h2>
+            <p style="margin:0;color:rgba(255,255,255,0.92);">أدخل بريدك الإلكتروني وكلمة المرور للوصول إلى دفترك عبر أجهزتك.</p>
+          </div>
+        </div>
+        <div style="padding:20px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border-bottom-left-radius:32px;border-bottom-right-radius:32px;">
+          <form id="loginForm" class="form-grid" style="gap:14px;">
+            <div class="field"><label for="loginEmailInput" style="color:rgba(255,255,255,0.95);">البريد الإلكتروني</label>
+              <input id="loginEmailInput" type="email" autocomplete="email" required style="width:100%;padding:12px;border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:#071019;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);">
+            </div>
+            <div class="field"><label for="loginPasswordInput" style="color:rgba(255,255,255,0.95);">كلمة المرور</label>
+              <input id="loginPasswordInput" type="password" autocomplete="current-password" required style="width:100%;padding:12px;border-radius:24px;border:1px solid rgba(255,255,255,0.06);background:#071019;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);">
+            </div>
+            <div id="loginError" style="color:#ffb6c1;margin-top:6px;min-height:1.2em;font-size:0.98rem;"></div>
+            <div style="display:flex;gap:8px;margin-top:14px;justify-content:flex-end;">
+              <button type="submit" id="loginSubmitButton" class="primary-button" style="background:linear-gradient(90deg,#0b6fbf 0%,#7b2cbf 100%);border:none;color:#fff;padding:12px 16px;border-radius:24px;box-shadow:0 6px 18px rgba(11,111,191,0.24);">تسجيل الدخول</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
